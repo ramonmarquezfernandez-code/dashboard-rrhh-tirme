@@ -1,0 +1,95 @@
+<aside class="w-64 bg-tirme-dark text-white flex flex-col h-screen min-h-screen sticky top-0 shadow-lg">
+  <!-- Logo / Cabecera del Sidebar -->
+  <div class="p-5 border-b border-slate-700">
+    <div class="flex items-center space-x-3">
+      <div class="bg-tirme-green text-white p-2 rounded-lg font-bold text-lg">TR</div>
+      <div>
+        <h1 class="font-bold text-lg tracking-wide">Tirme RRHH</h1>
+        <p class="text-xs text-slate-400">Cuadro de Mando</p>
+      </div>
+    </div>
+
+    <details class="mt-4 group">
+      <summary class="flex items-center justify-between gap-2 cursor-pointer list-none rounded-lg px-3 py-2 text-left hover:bg-slate-800 transition-colors">
+        <span class="min-w-0">
+          <span class="block text-[10px] uppercase tracking-wide text-slate-400">Usuario conectado</span>
+          <span class="block truncate text-xs font-medium text-white">{{ authService.usuarioActual()?.email }}</span>
+        </span>
+        <span class="text-slate-400 group-open:rotate-180 transition-transform">⌄</span>
+      </summary>
+
+      <button
+        type="button"
+        (click)="authService.logout()"
+        class="mt-1 w-full rounded-lg px-3 py-2 text-left text-xs text-slate-300 hover:bg-red-500/20 hover:text-red-200 transition-colors"
+      >
+        Cerrar sesión
+      </button>
+    </details>
+  </div>
+
+  <!-- Menú de navegación -->
+  <nav class="flex-1 min-h-0 overflow-y-auto p-4 space-y-1">
+    <a
+      routerLink="/resumen-general"
+      routerLinkActive="bg-slate-800 text-white"
+      class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors"
+    >
+      <!-- Icono y texto -->
+      <span>Resumen General</span>
+    </a>
+    <a
+      routerLink="/personas"
+      routerLinkActive="bg-tirme-green text-white"
+      class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+    >
+      <span class="text-lg">👥</span>
+      <span class="font-medium">Personal</span>
+    </a>
+    <a
+      routerLink="/turnos"
+      routerLinkActive="bg-tirme-green text-white"
+      class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+    >
+      <span class="text-lg">📅</span>
+      <span class="font-medium">Turnos y Horarios</span>
+    </a>
+    <a
+      routerLink="/horas-extra"
+      routerLinkActive="bg-tirme-green text-white"
+      class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+    >
+      <span class="text-lg">📊</span>
+      <span class="font-medium">HE por periodos</span>
+    </a>
+    <a
+      routerLink="/horas-extra-empleados"
+      routerLinkActive="bg-tirme-green text-white"
+      class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+    >
+      <span class="text-lg">👤</span>
+      <span class="font-medium">HE por empleado</span>
+    </a>
+    <a
+      routerLink="/ranking-combo"
+      routerLinkActive="bg-tirme-green text-white"
+      class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+    >
+      <span class="text-lg">🏆</span>
+      <span class="font-medium">Ranking HE Combo</span>
+    </a>
+    <a
+      routerLink="/sp-retribuidas"
+      routerLinkActive="bg-tirme-green text-white"
+      class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+    >
+      <span class="text-lg">📋</span>
+      <span class="font-medium">Total SP retribuidas</span>
+    </a>
+  </nav>
+
+  <!-- Pie del Sidebar -->
+  <div class="p-4 border-t border-slate-700 text-xs text-slate-400 text-center">
+    Flask API Connected
+  </div>
+</aside>

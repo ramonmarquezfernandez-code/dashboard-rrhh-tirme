@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-tirme-light: #f8fafc;
+  --color-tirme-dark: #1e293b;
+  --color-tirme-green: #10b981;
+}
+
+body {
+  @apply bg-slate-50 text-slate-800 antialiased;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+}

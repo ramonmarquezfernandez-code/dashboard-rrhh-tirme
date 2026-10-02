@@ -1,0 +1,106 @@
+<div class="p-6 space-y-6">
+  <!-- Tarjeta de estado de filtros actuales -->
+  <div
+    class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
+  >
+    <div>
+      <h3 class="text-base font-bold text-slate-800">Resumen General de Personal</h3>
+      <p class="text-xs text-slate-500">
+        Mostrando métricas basadas en la selección de la cabecera global.
+      </p>
+    </div>
+
+    <!-- Chips informativos con los valores actuales del Signal -->
+    <div class="flex flex-wrap items-center gap-2">
+      <span
+        class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200"
+      >
+        Año: <strong class="ml-1 text-slate-900">{{ filtrosService.filtros().anio }}</strong>
+      </span>
+      
+      <span
+        class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200"
+      >
+        Grupo:
+        <strong class="ml-1 text-slate-900">{{ filtrosService.filtros().grupo || 'Todos' }}</strong>
+      </span>
+      <span
+        class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200"
+      >
+        Estado:
+        <strong class="ml-1 text-slate-900">{{
+          filtrosService.filtros().estado || 'Todos'
+        }}</strong>
+      </span>
+    </div>
+  </div>
+
+  <!-- Mensaje de error si la carga falla -->
+  @if (errorMessage()) {
+    <div class="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-lg">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  <!-- Tarjeta con el total de plantilla activa (ACTIVE = 1 en userpayroll) -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+      <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Plantilla Total (Activos)</p>
+      <h4 class="text-2xl font-bold text-slate-800 mt-1">
+        @if (isLoading()) { <span class="text-slate-400 text-base">Cargando...</span> } @else { {{ totalPlantilla() }} }
+      </h4>
+      <span class="text-xs text-emerald-600 font-medium mt-2 inline-block">Empleados con ACTIVE = 1</span>
+    </div>
+  </div>
+
+  <!-- Cuadrícula de resúmenes por Grupo, Área y Departamento -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+      <div class="p-4 border-b border-slate-100 font-semibold text-xs text-slate-400 uppercase tracking-wider">
+        Activos por Grupo
+      </div>
+      <div class="divide-y divide-slate-100 max-h-80 overflow-y-auto">
+        @for (item of porGrupo(); track item.nombre) {
+          <div class="flex items-center justify-between px-4 py-2.5 text-sm">
+            <span class="text-slate-700">{{ item.nombre }}</span>
+            <span class="font-semibold text-slate-900">{{ item.total }}</span>
+          </div>
+        } @empty {
+          <div class="px-4 py-6 text-sm text-slate-400 text-center">Sin datos disponibles</div>
+        }
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+      <div class="p-4 border-b border-slate-100 font-semibold text-xs text-slate-400 uppercase tracking-wider">
+        Activos por Área
+      </div>
+      <div class="divide-y divide-slate-100 max-h-80 overflow-y-auto">
+        @for (item of porArea(); track item.nombre) {
+          <div class="flex items-center justify-between px-4 py-2.5 text-sm">
+            <span class="text-slate-700">{{ item.nombre }}</span>
+            <span class="font-semibold text-slate-900">{{ item.total }}</span>
+          </div>
+        } @empty {
+          <div class="px-4 py-6 text-sm text-slate-400 text-center">Sin datos disponibles</div>
+        }
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+      <div class="p-4 border-b border-slate-100 font-semibold text-xs text-slate-400 uppercase tracking-wider">
+        Activos por Departamento
+      </div>
+      <div class="divide-y divide-slate-100 max-h-80 overflow-y-auto">
+        @for (item of porDepartamento(); track item.nombre) {
+          <div class="flex items-center justify-between px-4 py-2.5 text-sm">
+            <span class="text-slate-700">{{ item.nombre }}</span>
+            <span class="font-semibold text-slate-900">{{ item.total }}</span>
+          </div>
+        } @empty {
+          <div class="px-4 py-6 text-sm text-slate-400 text-center">Sin datos disponibles</div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

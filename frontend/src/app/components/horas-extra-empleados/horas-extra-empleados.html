@@ -1,0 +1,104 @@
+<section class="empleados-page">
+  <div class="empleados-heading">
+    <div>
+      <p class="eyebrow">Control de horas extraordinarias</p>
+      <h1>HE por empleado</h1>
+      <p class="subtitle">Horas extra acumuladas por Cod. Emple con total general del filtro seleccionado.</p>
+    </div>
+
+    <div class="empleados-filters">
+      <label>Departamento
+        <select [(ngModel)]="departamento" (ngModelChange)="cargar()">
+          <option value="">Todos</option>
+          @for (item of departamentos; track item) {
+            <option [value]="item">{{ item }}</option>
+          }
+        </select>
+      </label>
+      <label>Trabajador
+        <select [(ngModel)]="trabajador" (ngModelChange)="cargar()">
+          <option value="">Todos los trabajadores</option>
+          @for (item of trabajadoresDisponibles; track item.pernr) {
+            <option [value]="item.pernr">{{ nombreEmpleado(item) }}</option>
+          }
+        </select>
+      </label>
+      <label>Año
+        <select [ngModel]="anio" (ngModelChange)="cambiarAnio($event)">
+          <option [value]="2026">2026</option>
+          <option [value]="2025">2025</option>
+          <option [value]="2024">2024</option>
+        </select>
+      </label>
+      <label>Periodo
+        <select [(ngModel)]="periodo" (ngModelChange)="cargar()">
+          <option value="">Todos los periodos</option>
+          @for (item of periodos; track item.id) {
+            <option [value]="item.id">{{ item.descripcion }}</option>
+          }
+        </select>
+      </label>
+      <label>Estado
+        <select [(ngModel)]="estado" (ngModelChange)="cargar()">
+          @for (est of estados; track est.valor) {
+            <option [value]="est.valor">{{ est.etiqueta }}</option>
+          }
+        </select>
+      </label>
+      <label>Ordenar por
+        <select [(ngModel)]="orden" (ngModelChange)="cargar()">
+          <option value="horas">Horas extra</option>
+          <option value="pernr">Cod. Emple</option>
+        </select>
+      </label>
+      <label class="natural-toggle">
+        <input type="checkbox" [(ngModel)]="anioNatural" (ngModelChange)="cargar()">
+        <span>Año natural</span>
+      </label>
+    </div>
+  </div>
+
+  @if (errorMessage) {
+    <div class="empleados-error" role="alert">{{ errorMessage }}</div>
+  }
+
+  <section class="empleados-panel">
+    <div class="table-header">
+      <h2>Horas extra por empleado</h2>
+      <span>{{ empleados.length }} empleados</span>
+    </div>
+
+    @if (isLoading) {
+      <div class="empleados-loading">Cargando empleados...</div>
+    } @else {
+      <div class="empleados-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Cod. Emple</th>
+              <th>Empleado</th>
+              <th class="hours">Horas extra</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (empleado of empleados; track empleado.pernr) {
+              <tr>
+                <td>{{ empleado.pernr }}</td>
+                <td>{{ nombreEmpleado(empleado) }}</td>
+                <td class="hours">{{ empleado.horas_extra | number:'1.0-0' }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="3" class="empty-row">No hay empleados para los filtros seleccionados.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="table-total">
+        <span>Total</span>
+        <strong>{{ total | number:'1.0-0' }}</strong>
+      </div>
+    }
+  </section>
+</section>

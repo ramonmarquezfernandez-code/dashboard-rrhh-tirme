@@ -1,0 +1,248 @@
+<section class="he-page">
+  <div class="he-heading">
+    <div>
+      <p class="eyebrow">Control de horas extraordinarias</p>
+      <h1>HE por periodos</h1>
+      <p class="subtitle">Resumen por departamento y seguimiento de los trabajadores con mayor acumulado.</p>
+    </div>
+    <div class="he-filters">
+      <label>Departamento
+        <select [(ngModel)]="departamento" (ngModelChange)="cargarResumen()">
+          <option value="">Todos los departamentos</option>
+          @for (item of departamentosDisponibles; track item) {
+            <option [value]="item">{{ item }}</option>
+          }
+        </select>
+      </label>
+      <label>Trabajador
+        <select [(ngModel)]="trabajador" (ngModelChange)="cargarResumen()">
+          <option value="">Todos los trabajadores</option>
+          @for (item of trabajadoresDisponibles; track item.id) {
+            <option [value]="item.id">{{ nombreTrabajador(item) }}</option>
+          }
+        </select>
+      </label>
+      <label>Año
+        <select [(ngModel)]="anio" (ngModelChange)="onFiltroChange('anio', $event)">
+          <option [value]="2026">2026</option>
+          <option [value]="2025">2025</option>
+          <option [value]="2024">2024</option>
+        </select>
+      </label>
+      <label>Periodo
+        <select [(ngModel)]="periodo" (ngModelChange)="onPeriodoChange($event)">
+          <option value="">Todos los periodos</option>
+          @for (item of periodos; track item.id) {
+            <option [value]="item.id">{{ item.descripcion }}</option>
+          }
+        </select>
+      </label>
+      <label>Estado
+        <select [(ngModel)]="estado" (ngModelChange)="cargarResumen()">
+          @for (item of estados; track item.valor) {
+            <option [value]="item.valor">{{ item.etiqueta }}</option>
+          }
+        </select>
+      </label>
+      <label class="natural-toggle">
+        <input type="checkbox" [(ngModel)]="anioNatural" (ngModelChange)="onModoChange()">
+        <span>Año natural</span>
+      </label>
+    </div>
+  </div>
+
+  @if (errorMessage) {
+    <div class="he-error" role="alert">{{ errorMessage }}</div>
+  }
+
+  @if (isLoading) {
+    <div class="he-loading">Cargando resumen de horas extra...</div>
+  } @else {
+    <div class="he-kpis">
+      <article class="kpi-card kpi-main">
+        <span>Total horas extra</span>
+        <strong>{{ totalHoras() | number:'1.0-0' }}</strong>
+        <small>Periodo seleccionado</small>
+      </article>
+      <article class="kpi-card">
+        <span>Departamentos</span>
+        <strong>{{ departamentos.length }}</strong>
+        <small>Con actividad registrada</small>
+      </article>
+      <article class="kpi-card">
+        <span>Trabajadores +70 h</span>
+        <strong>{{ trabajadoresSobreSetenta() }}</strong>
+        <small>Requieren seguimiento</small>
+      </article>
+      <article class="kpi-card">
+        <span>Departamento líder</span>
+        <strong class="kpi-text">{{ departamentoPrincipal() }}</strong>
+        <small>Por volumen total</small>
+      </article>
+    </div>
+
+    <div class="he-panels">
+      <article class="panel panel-wide">
+        <div class="panel-heading">
+          <div>
+            <h2>Resumen por departamento</h2>
+            <p>Desglose por tipo de hora extraordinaria</p>
+          </div>
+          <span class="legend-total">{{ anio }}</span>
+        </div>
+
+        <div class="table-wrap table-scroll-departments">
+          <table>
+            <thead>
+              <tr>
+                <th>Departamento</th>
+                <th>Normales</th>
+                <th>Compensar</th>
+                <th>Busca</th>
+                <th>Combo</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of departamentos; track item.departamento) {
+                <tr>
+                  <td>{{ item.departamento || 'Sin departamento' }}</td>
+                  <td>{{ item.normales }}</td>
+                  <td>{{ item.compensar }}</td>
+                  <td>{{ item.busca + item.buscanp }}</td>
+                  <td>{{ item.combo }}</td>
+                  <td class="total-cell">{{ item.total }}</td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="6" class="empty-state-row">No hay datos para el periodo seleccionado.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="panel panel-wide">
+        <div class="panel-heading">
+          <div>
+            <h2>Resumen de trabajadores</h2>
+            <p>Empleados con mayor acumulado de horas extra</p>
+          </div>
+          <span class="legend-total">{{ topTrabajadores().length }} empleados</span>
+        </div>
+
+        <div class="table-wrap table-scroll-workers">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Trabajador</th>
+                <th>HE normales</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of topTrabajadores(); track item.id; let index = $index) {
+                <tr [class.alert-orange]="claseAlerta(item.normales) === 'advertencia'" [class.alert-red]="claseAlerta(item.normales) === 'critico'">
+                  <td class="rank">{{ index + 1 }}</td>
+                  <td class="worker-name">{{ nombreTrabajador(item) }}</td>
+                  <td class="hours">{{ item.normales }}</td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="3" class="empty-state-row">No hay trabajadores con datos.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </div>
+
+    <div class="charts-grid">
+      <article class="panel chart-panel donut-panel">
+        <div class="panel-heading">
+          <div>
+            <h2>Distribución por departamento</h2>
+            <p>Horas totales según departamento</p>
+          </div>
+        </div>
+
+        <div class="donut-wrap">
+          <div class="donut-chart">
+            <svg viewBox="0 0 220 220" aria-label="Distribución por departamento">
+              <circle cx="110" cy="110" r="72" class="donut-base"></circle>
+              @for (item of departamentos; track item.departamento; let i = $index) {
+                <circle
+                  cx="110"
+                  cy="110"
+                  r="72"
+                  class="donut-segment"
+                  [style.stroke]="coloresDepartamentos[i % coloresDepartamentos.length]"
+                  [style.stroke-dasharray]="segmentoCirculo(item.total, totalDepartamentos())"
+                  [style.stroke-dashoffset]="-offsetCirculo(i, totalDepartamentos())"
+                ></circle>
+              }
+            </svg>
+            <div class="donut-center">
+              <strong>{{ totalHoras() | number:'1.0-0' }}</strong>
+              <span>Total HE</span>
+            </div>
+          </div>
+
+          <div class="donut-legend">
+            @for (item of departamentos; track item.departamento; let i = $index) {
+              <div class="legend-item">
+                <span class="legend-color" [style.background]="coloresDepartamentos[i % coloresDepartamentos.length]"></span>
+                <span>{{ item.departamento || 'Sin departamento' }}</span>
+                <strong>{{ item.total | number:'1.0-0' }}</strong>
+              </div>
+            } @empty {
+              <p class="empty-state">No hay datos para el periodo seleccionado.</p>
+            }
+          </div>
+        </div>
+      </article>
+
+      <article class="panel chart-panel">
+        <div class="panel-heading">
+          <div>
+            <h2>Evolución mensual</h2>
+            <p>Distribución por tipo de hora</p>
+          </div>
+          <span class="legend-total">{{ anio }}</span>
+        </div>
+
+        <div class="legend">
+          <span><i class="dot dot-normal"></i>Normales</span>
+          <span><i class="dot dot-compensar"></i>Compensar</span>
+          <span><i class="dot dot-busca"></i>Busca</span>
+          <span><i class="dot dot-combo"></i>Combo</span>
+        </div>
+
+        <div class="monthly-chart">
+          @for (item of mensual; track item.mes) {
+            <div class="month-row">
+              <span class="month-label">{{ nombreMes(item.mes) }}</span>
+              <div class="bar-track" [title]="item.total + ' horas'">
+                <span class="bar-segment dot-normal" [style.width]="porcentaje(item.normales, maxMensual())">
+                  @if (item.normales > 0) { <b class="bar-value">{{ item.normales }}</b> }
+                </span>
+                <span class="bar-segment dot-compensar" [style.width]="porcentaje(item.compensar, maxMensual())">
+                  @if (item.compensar > 0) { <b class="bar-value">{{ item.compensar }}</b> }
+                </span>
+                <span class="bar-segment dot-busca" [style.width]="porcentaje(item.busca + item.buscanp, maxMensual())">
+                  @if (item.busca + item.buscanp > 0) { <b class="bar-value">{{ item.busca + item.buscanp }}</b> }
+                </span>
+                <span class="bar-segment dot-combo" [style.width]="porcentaje(item.combo, maxMensual())">
+                  @if (item.combo > 0) { <b class="bar-value">{{ item.combo }}</b> }
+                </span>
+              </div>
+              <strong>{{ item.total | number:'1.0-0' }}</strong>
+            </div>
+          }
+        </div>
+      </article>
+    </div>
+  }
+</section>

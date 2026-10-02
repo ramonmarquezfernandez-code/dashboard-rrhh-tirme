@@ -1,0 +1,17 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: rrhh-mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: epartes_local
+      MYSQL_USER: rrhh_user
+      MYSQL_PASSWORD: 1234567890
+      MYSQL_ROOT_PASSWORD: rootsecret
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:

@@ -1,0 +1,46 @@
+.empleados-page {
+  min-height: 100%;
+  padding: 1.5rem;
+  background: #f4f6f8;
+  color: #17383d;
+}
+
+.empleados-heading {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(0, 3fr);
+  gap: 1.5rem;
+  align-items: start;
+  margin-bottom: 1.25rem;
+}
+
+.eyebrow { margin: 0 0 .3rem; color: #269b8d; font-size: .7rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+h1, h2, p { margin: 0; }
+h1 { color: #17383d; font-size: clamp(1.5rem, 2.4vw, 2.1rem); font-weight: 800; }
+.subtitle { margin-top: .35rem; color: #6f8589; font-size: .78rem; }
+
+.empleados-filters { display: flex; flex-wrap: nowrap; justify-content: flex-end; gap: .6rem; }
+.empleados-filters label { display: grid; gap: .25rem; color: #5e7377; font-size: .68rem; font-weight: 700; text-transform: uppercase; }
+.empleados-filters select, .empleados-filters input { width: 8.5rem; min-width: 0; border: 1px solid #cbd8d9; border-radius: .45rem; background: #fff; color: #17383d; padding: .55rem .7rem; font-size: .78rem; }
+.natural-toggle { display: flex !important; align-items: center; align-self: end; gap: .4rem; white-space: nowrap; text-transform: none !important; }
+.natural-toggle input { width: 1rem; height: 1rem; accent-color: #1f9d4c; }
+
+.empleados-panel { overflow: hidden; border: 1px solid #dce5e5; border-radius: .55rem; background: #fff; box-shadow: 0 5px 18px rgba(23, 56, 61, .06); }
+.table-header, .table-total { display: flex; align-items: center; justify-content: space-between; padding: .9rem 1.1rem; }
+.table-header { border-bottom: 1px solid #dce5e5; }
+.table-header h2 { font-size: .98rem; font-weight: 800; }
+.table-header span { color: #6f8589; font-size: .72rem; }
+.empleados-table-wrap { max-height: 32rem; overflow: auto; }
+table { width: max-content; min-width: 100%; border-collapse: collapse; font-size: .75rem; }
+thead { position: sticky; top: 0; z-index: 1; background: #0d2f38; color: #fff; }
+th, td { padding: .65rem 1.1rem; text-align: center; white-space: nowrap; }
+th { font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; }
+tbody tr { border-bottom: 1px solid #edf2f2; }
+tbody tr:nth-child(even) { background: #f7f9f9; }
+.hours { text-align: center; font-weight: 800; }
+.table-total { border-top: 3px solid #269b8d; background: #e9f5f3; font-size: .8rem; text-transform: uppercase; }
+.table-total strong { color: #17383d; font-size: 1rem; }
+.empty-row, .empleados-loading { padding: 2rem; color: #6f8589; text-align: center; }
+.empleados-error { margin-bottom: 1rem; padding: .8rem 1rem; border: 1px solid #efb2a8; border-radius: .45rem; background: #fff1ef; color: #9f3527; }
+
+@media (max-width: 1250px) { .empleados-heading { grid-template-columns: 1fr; } .empleados-filters { justify-content: flex-start; flex-wrap: wrap; } }
+@media (max-width: 640px) { .empleados-page { padding: 1rem; } .empleados-filters label, .empleados-filters select, .empleados-filters input { width: 100%; } .empleados-filters { display: grid; grid-template-columns: 1fr; } }

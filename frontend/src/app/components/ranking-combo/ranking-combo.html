@@ -1,0 +1,84 @@
+<section class="ranking-page">
+  <div class="ranking-heading">
+    <div>
+      <p class="eyebrow">Control de horas extraordinarias</p>
+      <h1>Ranking HE Combo</h1>
+      <p class="subtitle">Comparativa por empleado de horas combo, total HE y compensación convertida.</p>
+    </div>
+    <div class="ranking-filters">
+      <label>Departamento
+        <select [(ngModel)]="departamento" (ngModelChange)="cargar()">
+          <option value="">Todos</option>
+          @for (item of departamentos; track item) { <option [value]="item">{{ item }}</option> }
+        </select>
+      </label>
+      <label>Trabajador
+        <select [(ngModel)]="trabajador" (ngModelChange)="cargar()">
+          <option value="">Todos los trabajadores</option>
+          @for (item of trabajadoresDisponibles; track item.pernr) {
+            <option [value]="item.pernr">{{ nombreEmpleado(item) }}</option>
+          }
+        </select>
+      </label>
+      <label>Año
+        <select [ngModel]="anio" (ngModelChange)="cambiarAnio($event)">
+          <option [value]="2026">2026</option><option [value]="2025">2025</option><option [value]="2024">2024</option>
+        </select>
+      </label>
+      <label>Periodo
+        <select [(ngModel)]="periodo" (ngModelChange)="cargar()">
+          <option value="">Todos los periodos</option>
+          @for (item of periodos; track item.id) { <option [value]="item.id">{{ item.descripcion }}</option> }
+        </select>
+      </label>
+      <label>Estado
+        <select [(ngModel)]="estado" (ngModelChange)="cargar()">
+          @for (item of estados; track item.valor) { <option [value]="item.valor">{{ item.etiqueta }}</option> }
+        </select>
+      </label>
+      <label class="natural-toggle"><input type="checkbox" [(ngModel)]="anioNatural" (ngModelChange)="cargar()"><span>Año natural</span></label>
+    </div>
+  </div>
+
+  @if (errorMessage) { <div class="ranking-error" role="alert">{{ errorMessage }}</div> }
+  @if (isLoading) { <div class="ranking-loading">Cargando ranking...</div> } @else {
+    <div class="ranking-grid">
+      <article class="ranking-card">
+        <h2>Sábados programados - total horas combo</h2>
+        <div class="ranking-table-wrap"><table><thead><tr><th>Trabajador</th><th>PERNR</th><th>Horas</th></tr></thead><tbody>
+          @for (fila of rankingCombo(); track fila.pernr) { <tr><td>{{ nombreEmpleado(fila) }}</td><td>{{ fila.pernr }}</td><td class="number">{{ fila.combo_programadas | number:'1.0-0' }}</td></tr> }
+          @empty { <tr><td colspan="3" class="empty">Sin datos</td></tr> }
+        </tbody></table></div>
+        <div class="card-total"><span>Total</span><strong>{{ totales.combo_programadas | number:'1.0-0' }}</strong></div>
+      </article>
+
+      <article class="ranking-card">
+        <h2>Ranking total HE</h2>
+        <div class="ranking-table-wrap"><table><thead><tr><th>Trabajador</th><th>PERNR</th><th>Total</th></tr></thead><tbody>
+          @for (fila of rankingTotal(); track fila.pernr) { <tr><td>{{ nombreEmpleado(fila) }}</td><td>{{ fila.pernr }}</td><td class="number">{{ fila.total_he | number:'1.0-0' }}</td></tr> }
+          @empty { <tr><td colspan="3" class="empty">Sin datos</td></tr> }
+        </tbody></table></div>
+        <div class="card-total"><span>Total</span><strong>{{ totales.total_he | number:'1.0-0' }}</strong></div>
+      </article>
+
+      <article class="ranking-card ranking-compensar">
+        <h2>Ranking HE compensar</h2>
+        <div class="ranking-table-wrap"><table><thead><tr><th>Trabajador</th><th>PERNR</th><th>HE comp.</th><th>HE comp. conv.</th></tr></thead><tbody>
+          @for (fila of rankingCompensar(); track fila.pernr) { <tr><td>{{ nombreEmpleado(fila) }}</td><td>{{ fila.pernr }}</td><td class="number">{{ fila.he_compensables | number:'1.0-1' }}</td><td class="number">{{ fila.he_compensables_convertidas | number:'1.0-1' }}</td></tr> }
+          @empty { <tr><td colspan="4" class="empty">Sin datos</td></tr> }
+        </tbody></table></div>
+        <div class="card-total"><span>Total</span><strong>{{ totales.he_compensables | number:'1.0-1' }} / {{ totales.he_compensables_convertidas | number:'1.0-1' }}</strong></div>
+      </article>
+    </div>
+
+    <article class="ranking-card chart-card">
+      <div class="chart-heading"><div><h2>HE compensar y HE comp. convert</h2><p>Conversión: DL x 1,6 | DF y NL x 2 | NF x 2,5.</p></div><span>{{ filas.length }} empleados</span></div>
+      <div class="chart-legend"><span><i class="legend-comp"></i>HE compensar</span><span><i class="legend-conv"></i>HE comp. convert</span></div>
+      <div class="combo-chart">
+        @for (fila of filas; track fila.pernr) {
+          <div class="chart-row"><span>{{ nombreEmpleado(fila) }}</span><div class="bars"><i class="bar compensar" [style.width]="anchoGrafico(fila.he_compensables)" [title]="fila.he_compensables"></i><i class="bar convert" [style.width]="anchoGrafico(fila.he_compensables_convertidas)" [title]="fila.he_compensables_convertidas"></i></div></div>
+        } @empty { <p class="empty">Sin datos para representar.</p> }
+      </div>
+    </article>
+  }
+</section>

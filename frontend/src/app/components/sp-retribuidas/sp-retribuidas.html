@@ -1,0 +1,145 @@
+<section class="sp-page">
+  <header class="sp-heading">
+    <div>
+      <p class="eyebrow">Control de partes especiales</p>
+      <h1>Total SP retribuidas</h1>
+      <p class="subtitle">Partes con el campo SP informado, agrupados por persona y departamento.</p>
+    </div>
+    <label class="date-filter">Fecha de corte
+      <input type="date" [(ngModel)]="fechaHasta" (ngModelChange)="cargar()">
+    </label>
+  </header>
+
+  @if (errorMessage) {
+    <div class="sp-error" role="alert">{{ errorMessage }}</div>
+  }
+
+  @if (isLoading) {
+    <div class="sp-loading">Cargando resumen de SP...</div>
+  } @else if (periodo12 && periodo24) {
+    <div class="sp-note">Datos acumulados hasta el {{ tituloFecha(fechaHasta) }}. Solo se cuentan registros con SP informado.</div>
+    <div class="sp-grid">
+      <article class="sp-panel">
+          <div class="panel-title">
+            <div>
+              <p class="panel-kicker">SP últimos 12 meses</p>
+              <h2>Por persona y departamento</h2>
+            </div>
+            <span class="period-range">{{ tituloFecha(periodo12.fecha_desde) }} - {{ tituloFecha(periodo12.fecha_hasta) }}</span>
+          </div>
+
+          <div class="sp-content">
+            <div class="sp-tables">
+              <section class="data-card">
+                <div class="data-card-heading"><strong>Personas</strong><span>{{ periodo12.total_personas }}</span></div>
+                <div class="sp-table-wrap">
+                  <table>
+                    <thead><tr><th>Trabajador</th><th>SP</th></tr></thead>
+                    <tbody>
+                      @for (persona of personas12; track persona.id + '-' + $index) {
+                        <tr><td>{{ nombrePersona(persona) }}</td><td class="number">{{ persona.sp }}</td></tr>
+                      } @empty {
+                        <tr><td colspan="2" class="empty">Sin SP en el periodo.</td></tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+                <div class="card-total"><span>Total</span><strong>{{ periodo12.total_sp | number:'1.0-0' }}</strong></div>
+              </section>
+
+              <section class="data-card">
+                <div class="data-card-heading"><strong>Departamentos</strong><span>{{ periodo12.departamentos.length }}</span></div>
+                <div class="sp-table-wrap">
+                  <table>
+                    <thead><tr><th>Departamento</th><th>SP</th></tr></thead>
+                    <tbody>
+                      @for (departamento of departamentos12; track $index) {
+                        <tr><td>{{ departamento.departamento || 'Sin departamento' }}</td><td class="number">{{ departamento.sp }}</td></tr>
+                      } @empty {
+                        <tr><td colspan="2" class="empty">Sin departamentos en el periodo.</td></tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+                <div class="card-total"><span>Total</span><strong>{{ periodo12.total_sp | number:'1.0-0' }}</strong></div>
+              </section>
+            </div>
+
+            <div class="distribution">
+              <div class="donut" [style.background]="graficoDepartamentos(periodo12)">
+                <div><strong>{{ periodo12.total_sp | number:'1.0-0' }}</strong><span>Total SP</span></div>
+              </div>
+              <div class="legend">
+                @for (departamento of departamentos12; track $index; let indice = $index) {
+                  <div class="legend-row">
+                    <i [style.background]="color(indice)"></i>
+                    <span>{{ departamento.departamento || 'Sin departamento' }}</span>
+                    <strong>{{ porcentaje(departamento.sp, periodo12.total_sp) | number:'1.0-1' }}%</strong>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+      </article>
+      <article class="sp-panel">
+        <div class="panel-title">
+          <div>
+            <p class="panel-kicker">SP últimos 24 meses</p>
+            <h2>Por persona y departamento</h2>
+          </div>
+          <span class="period-range">{{ tituloFecha(periodo24.fecha_desde) }} - {{ tituloFecha(periodo24.fecha_hasta) }}</span>
+        </div>
+        <div class="sp-content">
+          <div class="sp-tables">
+            <section class="data-card">
+              <div class="data-card-heading"><strong>Personas</strong><span>{{ periodo24.total_personas }}</span></div>
+              <div class="sp-table-wrap">
+                <table>
+                  <thead><tr><th>Trabajador</th><th>SP</th></tr></thead>
+                  <tbody>
+                      @for (persona of periodo24.personas; track $index) {
+                      <tr><td>{{ nombrePersona(persona) }}</td><td class="number">{{ persona.sp }}</td></tr>
+                    } @empty {
+                      <tr><td colspan="2" class="empty">Sin SP en el periodo.</td></tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+              <div class="card-total"><span>Total</span><strong>{{ periodo24.total_sp | number:'1.0-0' }}</strong></div>
+            </section>
+            <section class="data-card">
+              <div class="data-card-heading"><strong>Departamentos</strong><span>{{ periodo24.departamentos.length }}</span></div>
+              <div class="sp-table-wrap">
+                <table>
+                  <thead><tr><th>Departamento</th><th>SP</th></tr></thead>
+                  <tbody>
+                      @for (departamento of periodo24.departamentos; track $index) {
+                      <tr><td>{{ departamento.departamento || 'Sin departamento' }}</td><td class="number">{{ departamento.sp }}</td></tr>
+                    } @empty {
+                      <tr><td colspan="2" class="empty">Sin departamentos en el periodo.</td></tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+              <div class="card-total"><span>Total</span><strong>{{ periodo24.total_sp | number:'1.0-0' }}</strong></div>
+            </section>
+          </div>
+          <div class="distribution">
+            <div class="donut" [style.background]="graficoDepartamentos(periodo24)">
+              <div><strong>{{ periodo24.total_sp | number:'1.0-0' }}</strong><span>Total SP</span></div>
+            </div>
+            <div class="legend">
+                @for (departamento of periodo24.departamentos; track $index; let indice = $index) {
+                <div class="legend-row">
+                  <i [style.background]="color(indice)"></i>
+                  <span>{{ departamento.departamento || 'Sin departamento' }}</span>
+                  <strong>{{ porcentaje(departamento.sp, periodo24.total_sp) | number:'1.0-1' }}%</strong>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  }
+</section>
