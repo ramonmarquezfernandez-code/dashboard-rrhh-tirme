@@ -1,17 +1,33 @@
+# Base de datos del Dashboard RRHH.
+# Usa MariaDB 12.3, la misma versión que generó epartes_local_backup.sql.
+# Las credenciales se leen del fichero .env de esta carpeta (copia de .env.example).
+#
+# La primera vez que se crea el volumen, MariaDB ejecuta automáticamente los
+# scripts de /docker-entrypoint-initdb.d: carga el dump y crea la BD vacía
+# epartes_test que usan los tests.
+# Para volver a cargarlo desde cero: docker compose down -v && docker compose up -d
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: rrhh-mysql
-    restart: always
+  mariadb:
+    image: mariadb:12.3
+    container_name: rrhh-mariadb
+    restart: unless-stopped
     environment:
-      MYSQL_DATABASE: epartes_local
-      MYSQL_USER: rrhh_user
-      MYSQL_PASSWORD: 1234567890
-      MYSQL_ROOT_PASSWORD: rootsecret
+      MARIADB_DATABASE: ${DB_NAME:-epartes_local}
+      MARIADB_USER: ${DB_USER:-rrhh_user}
+      MARIADB_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en .env}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Define DB_ROOT_PASSWORD en .env}
+      TEST_DB_NAME: ${TEST_DB_NAME:-epartes_test}
     ports:
-      - "3306:3306"
+      - "${DB_PORT:-3306}:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mariadb_data:/var/lib/mysql
+      - ./epartes_local_backup.sql:/docker-entrypoint-initdb.d/01-epartes_local.sql:ro
+      - ./docker/initdb/02-crear-bd-test.sh:/docker-entrypoint-initdb.d/02-crear-bd-test.sh:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
 
 volumes:
-  mysql_data:
+  mariadb_data:

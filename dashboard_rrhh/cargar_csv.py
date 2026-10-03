@@ -113,7 +113,7 @@ def load_table(cursor, conn, table_name, csv_path, batch_size=5000):
     elapsed = time.time() - start_time
     print(f"  [OK] Total {total_rows} filas insertadas en {table_name} en {elapsed:.2f} segundos.")
 
-def main(csv_dir='C:/Users/raman/Downloads/copia'):
+def main(csv_dir):
     print(f"Buscando archivos CSV en: {csv_dir}")
     if not os.path.exists(csv_dir):
         print(f"Error: La carpeta {csv_dir} no existe.")
@@ -152,5 +152,9 @@ def main(csv_dir='C:/Users/raman/Downloads/copia'):
         conn.close()
 
 if __name__ == '__main__':
-    csv_dir = sys.argv[1] if len(sys.argv) > 1 else 'C:/Users/raman/Downloads/copia'
+    # Carpeta de los CSV: primer argumento o variable CSV_DIR del .env
+    csv_dir = sys.argv[1] if len(sys.argv) > 1 else os.getenv('CSV_DIR')
+    if not csv_dir:
+        print("Uso: python cargar_csv.py <carpeta_con_csv>  (o define CSV_DIR en .env)")
+        sys.exit(1)
     main(csv_dir)
