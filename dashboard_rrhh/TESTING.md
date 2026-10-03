@@ -2,14 +2,41 @@
 
 ## Descripción
 
-Se han creado **dos interfaces** para probar los endpoints de la API:
-
-1. **Swagger UI (Documentación Interactiva)** ✨ - Recomendado
-2. **Cliente HTML Simple** 🧪 - Para pruebas rápidas
+Los endpoints de la API se prueban a mano con **Swagger UI** (documentación interactiva en `/api/doc`) o con **curl**. Las pruebas automáticas están en `tests/` y se ejecutan con `python -m pytest`.
 
 ---
 
-## 🟢 Opción 1: Swagger UI (Recomendado)
+## 🔐 Autenticación (obligatoria)
+
+Todos los endpoints de datos (`/api/partes/*`) exigen un token JWT. Sin token responden `401`; con un perfil sin permiso, `403`. Los datos se filtran en el servidor según el perfil activo:
+
+- **hr**: todo.
+- **mando**: los grupos donde tiene rol VB/FI, más sus propios partes.
+- **empleado**: solo sus partes.
+
+Antes, crea los usuarios de prueba con `python seed.py`. La contraseña de todos es `Tirme2026!`; la lista está en el README.
+
+**Endpoints de autenticación:**
+
+- `POST /api/get-roles` con `{"email", "password"}` valida las credenciales y devuelve los perfiles del usuario. Si el correo o la contraseña no son válidos responde `401`, siempre con el mismo mensaje, para no revelar qué correos existen.
+- `POST /api/login` con `{"email", "password", "rol"}` devuelve `{"token", "user"}`. `rol` es opcional; si no se indica, se usa el de mayor prioridad.
+- `GET /api/me` devuelve los datos del token actual.
+
+**Obtener un token con curl (bash):**
+
+```bash
+TOKEN=$(curl -s -X POST http://localhost:5000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "atorres@empresa.local", "password": "Tirme2026!", "rol": "hr"}' \
+  | python -c "import sys, json; print(json.load(sys.stdin)['token'])")
+curl -H "Authorization: Bearer $TOKEN" http://localhost:5000/api/partes
+```
+
+**En Swagger:** ejecuta `POST /api/login`, copia el `token`, pulsa **Authorize** y escribe `Bearer <token>`.
+
+---
+
+## 🟢 Swagger UI
 
 ### Características
 - ✅ Documentación automática e interactiva
@@ -34,13 +61,45 @@ python app.py
 http://localhost:5000/api/doc
 ```
 
-### Endpoints Disponibles en Swagger (API v2)
+### Endpoints disponibles en Swagger
 
-- `GET /api/v2/partes` - Listado paginado de partes
-- `GET /api/v2/partes/empleado/{pernr}` - Partes de un empleado
-- `GET /api/v2/partes/resumen-departamento` - Resumen por departamento
-- `GET /api/v2/partes/resumen-trabajador` - Resumen por trabajador
-- `GET /api/v2/partes/comite` - Horas extras para comité
+La API tiene una única versión: todos sus endpoints aparecen en Swagger.
+
+**Autenticación**
+
+- `POST /api/get-roles`, `POST /api/login`, `GET /api/me`.
+
+**Partes** (`/api/partes`)
+
+| Endpoint | Perfiles | Uso |
+|---|---|---|
+| `GET /estados` | todos | Estados de parte (combos de filtro) |
+| `GET /` | todos | Listado paginado (`page`, `per_page`) |
+| `GET /empleado/{pernr}` | todos | Partes de un trabajador (404 si no es visible) |
+| `GET /he-por-periodo` | todos | Pantalla *HE por periodos* |
+| `GET /he-por-empleado` | todos | Pantalla *HE por empleado* |
+| `GET /ranking-combo` | hr, mando | Pantalla *Ranking HE Combo* |
+| `GET /sp-resumen-periodos` | todos | Pantalla *Total SP retribuidas* |
+| `GET /plantilla-resumen` | hr, mando | Pantalla *Resumen General* |
+| `GET /resumen-departamento`, `/resumen-trabajador`, `/comite`, `/he-anio-natural` | todos | Resúmenes del ejercicio (`anio`) |
+
+**Parámetros comunes de las pantallas de HE:**
+
+- `anio`: año de 4 cifras.
+- `mes_desde`, `mes_hasta`: de 1 a 12.
+- `anio_natural`: si es `true`, se filtra por la fecha del parte en lugar del mes de nómina.
+- `periodo_id`: periodo de nómina de `zperiodos`.
+- `departamento`, `pernr`, `estado`.
+
+Si un parámetro no es válido, se responde `400` con `{"message"}`.
+
+**Cálculos:** las fórmulas están en `services/horas_extra_service.py`.
+
+- **Total HE en HE por periodo/empleado y en los resúmenes:** normales + compensar + busca + busca no pagada + combo (`TOTAL_HE_PERIODO`).
+- **Total HE en el Ranking:** lo anterior, más las columnas F y las combo programadas (`TOTAL_HE_RANKING`).
+- **HE compensables convertidas:** DL·1,6 + DF·2 + NL·2 + NF·2,5.
+
+**SP:** un parte cuenta como SP si `zparte.SP` vale uno de `VALORES_MARCADO` (`'t'`, `'X'`, `'1'`, `'S'`), definido en `services/sp_service.py`. `'f'`, `'0'`, el valor vacío y NULL no cuentan. Es un **supuesto pendiente de confirmar** con la app corporativa, porque el dump no trae valores de ejemplo.
 
 ### Ventajas de Swagger
 - Documentación clara con descripciones
@@ -51,67 +110,10 @@ http://localhost:5000/api/doc
 
 ---
 
-## 🟡 Opción 2: Cliente HTML Simple
-
-### Características
-- ✅ Interfaz visual amigable
-- ✅ Formularios para cada endpoint
-- ✅ Resultados en tiempo real
-- ✅ No requiere instalación adicional
-- ✅ Bueno para pruebas rápidas
-
-### Cómo Acceder
-
-**1. Inicia el servidor (igual que Swagger):**
-```bash
-cd dashboard_rrhh
-./run.sh
-```
-
-**2. Abre el archivo HTML:**
-```bash
-# Opción A: Abrir directamente
-open client.html
-
-# Opción B: Desde el navegador
-file:///home/ramonmf/Documentos/Proyecto_Fin/App/Python/dashboard_rrhh/client.html
-```
-
-### Interfaz del Cliente
-- 6 tarjetas interactivas, una por cada endpoint
-- Campos de entrada personalizables
-- Respuestas formateadas en JSON
-- Indicadores de éxito/error
-- Configuración de URL base
-
-### Endpoints Disponibles en Cliente (API v1)
-
-- `GET /api/partes?page=1&per_page=20` - Listado paginado
-- `GET /api/partes/empleado/{pernr}` - Partes de empleado
-- `GET /api/partes/resumen-departamento?anio=2026` - Resumen departamento
-- `GET /api/partes/resumen-trabajador?anio=2026` - Resumen trabajador
-- `GET /api/partes/comite?anio=2026` - Horas extras comité
-
----
-
-## 📊 Comparativa
-
-| Característica | Swagger UI | Cliente HTML |
-|---|---|---|
-| Documentación automática | ✅ | ❌ |
-| Visualización de esquemas | ✅ | ❌ |
-| Interfaz visual | ✅ | ✅ |
-| Pruebas rápidas | ✅ | ✅ |
-| Curl ejemplos | ✅ | ❌ |
-| Validación de parámetros | ✅ | ✅ |
-| Recomendado para | Desarrollo | Testing rápido |
-
----
-
 ## 🛠️ Configuración
 
 ### Requerimientos
-- Python 3.8+
+- Python 3.10+
 - Flask 3.0.3
 - Flask-RESTX 1.3.2 (automáticamente instalado)
 - SQLAlchemy
@@ -124,21 +126,22 @@ Si aún no las has instalado:
 cd dashboard_rrhh
 source venv/bin/activate
 pip install -r requirements.txt
-pip install flask-restx
 ```
 
 ### Variables de Entorno
 
-Verifica que `.env` tenga la configuración correcta:
+Copia `.env.example` a `.env` y rellena tus valores (el `.env` no se sube al repositorio). Las variables son:
 ```env
 FLASK_APP=app.py
-FLASK_ENV=development
+FLASK_DEBUG=1
 DB_USER=rrhh_user
-DB_PASSWORD=1234567890
+DB_PASSWORD=<la misma que en el .env de la raíz>
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_NAME=epartes_local
-SECRET_KEY=clave_secreta_desarrollo_rrhh
+SECRET_KEY=<clave aleatoria de 32 caracteres o más>
+JWT_SECRET_KEY=<otra clave aleatoria>
+TEST_DB_NAME=epartes_test
 ```
 
 ---
@@ -146,8 +149,7 @@ SECRET_KEY=clave_secreta_desarrollo_rrhh
 ## 🔄 Endpoints Disponibles
 
 ### Base de URLs
-- **API v1 (Legacy):** `http://localhost:5000/api/partes`
-- **API v2 (Swagger):** `http://localhost:5000/api/v2/partes`
+- **API:** `http://localhost:5000/api/partes` (documentada en `http://localhost:5000/api/doc`)
 
 ### GET /api/partes
 Obtiene listado paginado de partes.
@@ -158,7 +160,7 @@ Obtiene listado paginado de partes.
 
 **Ejemplo:**
 ```bash
-curl "http://localhost:5000/api/partes?page=1&per_page=20"
+curl -H "Authorization: Bearer $TOKEN" "http://localhost:5000/api/partes?page=1&per_page=20"
 ```
 
 ### GET /api/partes/empleado/{pernr}
@@ -169,7 +171,7 @@ Obtiene partes de un empleado específico.
 
 **Ejemplo:**
 ```bash
-curl "http://localhost:5000/api/partes/empleado/00000001"
+curl -H "Authorization: Bearer $TOKEN" "http://localhost:5000/api/partes/empleado/00000001"
 ```
 
 ### GET /api/partes/resumen-departamento
@@ -180,7 +182,7 @@ Obtiene resumen de horas extras por departamento.
 
 **Ejemplo:**
 ```bash
-curl "http://localhost:5000/api/partes/resumen-departamento?anio=2026"
+curl -H "Authorization: Bearer $TOKEN" "http://localhost:5000/api/partes/resumen-departamento?anio=2026"
 ```
 
 ### GET /api/partes/resumen-trabajador
@@ -191,7 +193,7 @@ Obtiene resumen de horas extras por trabajador.
 
 **Ejemplo:**
 ```bash
-curl "http://localhost:5000/api/partes/resumen-trabajador?anio=2026"
+curl -H "Authorization: Bearer $TOKEN" "http://localhost:5000/api/partes/resumen-trabajador?anio=2026"
 ```
 
 ### GET /api/partes/comite
@@ -202,7 +204,7 @@ Obtiene resumen de horas extras para comité.
 
 **Ejemplo:**
 ```bash
-curl "http://localhost:5000/api/partes/comite?anio=2026"
+curl -H "Authorization: Bearer $TOKEN" "http://localhost:5000/api/partes/comite?anio=2026"
 ```
 
 ---
@@ -234,7 +236,7 @@ python app.py
 
 - [ ] Servidor Flask ejecutándose en `http://localhost:5000`
 - [ ] Swagger UI accesible en `http://localhost:5000/api/doc`
-- [ ] Cliente HTML funciona en `file:///.../client.html`
+- [ ] `GET /api/partes` sin token devuelve 401 y con token devuelve los partes del perfil
 - [ ] Endpoints responden con datos (o error de BD si no está conectada)
 - [ ] Parámetros se aceptan correctamente
 - [ ] Respuestas están en formato JSON
@@ -245,7 +247,6 @@ python app.py
 
 - Si la BD no está conectada, verás errores de conexión, pero la API y las interfaces funcionan
 - Swagger UI se genera automáticamente desde el código
-- El cliente HTML es totalmente independiente y funciona sin BD
 - Ambas interfaces usan la misma API backend
 
 ---
@@ -256,10 +257,7 @@ python app.py
 → Asegúrate de que el servidor está corriendo: `./run.sh`
 
 ### "Module not found: flask_restx"
-→ Instala la dependencia: `pip install flask-restx`
-
-### Cliente HTML no muestra respuestas
-→ Verifica que la URL base sea correcta: `http://localhost:5000`
+→ Instala las dependencias: `pip install -r requirements.txt`
 
 ### Swagger UI no carga
 → Recarga la página o limpia el caché del navegador

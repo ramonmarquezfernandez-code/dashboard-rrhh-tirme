@@ -1,51 +1,16 @@
+import os
+
 from config import Config
-from extensions import db, ma
+from extensions import db, jwt, ma
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_restx import Api
 
-# Importar Blueprints y Namespaces
-from routes.partes import partes_bp
-from routes.api_v2 import partes_ns
-from routes.auth_v2 import auth_ns
-
-app = Flask(__name__)
-app.config.from_object(Config)
-CORS(
-    app,
-    resources={r'/api/*': {
-        'origins': ['http://localhost:4200', 'http://127.0.0.1:4200'],
-    }},
-)
-
-# Inicializar extensiones
-db.init_app(app)
-ma.init_app(app)
-
-# Crear API con Swagger (Flask-RESTX)
-api = Api(
-    app,
-    version='2.0',
-    title='Dashboard RRHH API',
-    description='API para gestión de partes de horas, trabajadores, autenticación y reportes RRHH',
-    doc='/api/doc',
-)
-
-# Registrar namespaces de la API v2 con Swagger
-api.add_namespace(auth_ns, path='/api/v2/auth')
-api.add_namespace(partes_ns, path='/api/v2/partes')
-
-# Registrar Blueprints legados (v1) si existen
-try:
-    from routes.auth import auth_bp
-    app.register_blueprint(auth_bp)
-except ImportError:
-    pass
-
-app.register_blueprint(partes_bp)
+# Namespaces de la API (todos documentados en Swagger)
+from routes.auth import auth_ns
+from routes.partes import partes_ns
 
 
-@app.route('/')
 def index():
     return jsonify(
         {
@@ -53,17 +18,78 @@ def index():
             'message': 'Dashboard RRHH API - Módulo de Partes de Horas y Auth Activo',
             'docs': 'Accede a /api/doc para la documentación interactiva',
             'endpoints': {
-                'api_v1': '/api/partes',
-                'api_v2_auth': '/api/v2/auth',
-                'api_v2_partes': '/api/v2/partes',
+                'auth': '/api/login',
+                'partes': '/api/partes',
             },
         }
     )
 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+# Respuestas JSON homogéneas cuando falta el token o no es válido
+@jwt.unauthorized_loader
+def sin_token(motivo):
+    return jsonify({'message': 'Debes iniciar sesión.'}), 401
+
+
+@jwt.invalid_token_loader
+def token_invalido(motivo):
+    return jsonify({'message': 'Sesión no válida. Vuelve a iniciar sesión.'}), 401
+
+
+@jwt.expired_token_loader
+def token_caducado(cabecera, payload):
+    return jsonify({'message': 'La sesión ha caducado. Vuelve a iniciar sesión.'}), 401
+
+
+def create_app(config_object=Config):
+    """Crea la aplicación Flask con la configuración indicada (los tests usan otra BD)."""
+    app = Flask(__name__)
+    app.config.from_object(config_object)
+    CORS(
+        app,
+        resources={r'/api/*': {
+            'origins': ['http://localhost:4200', 'http://127.0.0.1:4200'],
+        }},
+    )
+
+    # Inicializar extensiones
+    db.init_app(app)
+    ma.init_app(app)
+    jwt.init_app(app)
+
+    # La ruta '/' se registra ANTES de crear el Api: Flask-RESTX añade su propia
+    # ruta '/' (endpoint 'root', que responde 404) y la primera registrada gana.
+    app.add_url_rule('/', 'index', index)
+
+    # Crear API con Swagger (Flask-RESTX)
+    api = Api(
+        app,
+        version='2.0',
+        title='Dashboard RRHH API',
+        description='API para gestión de partes de horas, trabajadores, autenticación y reportes RRHH',
+        doc='/api/doc',
+        authorizations={
+            'Bearer': {
+                'type': 'apiKey',
+                'in': 'header',
+                'name': 'Authorization',
+                'description': 'Escribe: Bearer <token devuelto por /api/login>',
+            },
+        },
+    )
+
+    # Autenticación (mismas URLs que usa Angular: /api/login, /api/get-roles, /api/me)
+    api.add_namespace(auth_ns, path='/api')
+    # Partes de horas, horas extra, SP y plantilla
+    api.add_namespace(partes_ns, path='/api/partes')
+
+    return app
+
+
+app = create_app()
 
 
 if __name__ == '__main__':
-  app.run(host='0.0.0.0', port=5000, debug=True)
+    # Solo en local. El modo debug se activa con FLASK_DEBUG=1 en .env;
+    # nunca exponerlo en red porque el depurador permite ejecutar código.
+    app.run(host='127.0.0.1', port=5000, debug=os.getenv('FLASK_DEBUG') == '1')

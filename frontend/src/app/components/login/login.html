@@ -9,7 +9,7 @@
       <h2 class="text-2xl font-bold text-slate-800">Tirme RRHH</h2>
       <p class="text-xs text-slate-500">
         @if (step === 1) {
-          Introduce tu correo corporativo para continuar
+          Introduce tu correo corporativo y tu contraseña
         } @else {
           Hola, <span class="font-semibold text-slate-700">{{ email }}</span>
         }
@@ -31,9 +31,9 @@
       </div>
     }
 
-    <!-- PASO 1: Introducir Correo -->
+    <!-- PASO 1: Correo y contraseña (se validan en el servidor) -->
     @if (step === 1) {
-      <form (submit)="$event.preventDefault(); onCheckEmail()" class="space-y-4">
+      <form (submit)="$event.preventDefault(); onCheckCredentials()" class="space-y-4">
         <div>
           <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Correo Electrónico</label>
           <input 
@@ -54,15 +54,12 @@
             type="password"
             [(ngModel)]="password"
             name="password"
-            [required]="!isAdminEmail()"
+            required
             placeholder="••••••••"
             [class.border-rose-400]="errorMessage"
             [class.bg-rose-50]="errorMessage"
             class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-600 focus:outline-none transition-all"
           />
-          @if (isAdminEmail()) {
-            <p class="mt-1 text-[11px] text-slate-400">Este usuario puede acceder sin contraseña.</p>
-          }
         </div>
 
         <button 
@@ -79,21 +76,9 @@
       </form>
     }
 
-    <!-- PASO 2: Introducir Contraseña y Elegir Rol -->
+    <!-- PASO 2: Elegir perfil (solo si el usuario tiene varios) -->
     @if (step === 2) {
       <form (submit)="$event.preventDefault(); onLogin()" class="space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Contraseña</label>
-          <input 
-            type="password" 
-            [(ngModel)]="password" 
-            name="password"
-            [required]="!isAdminEmail()"
-            placeholder="••••••••"
-            class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-600 focus:outline-none transition-all"
-          />
-        </div>
-
         <div>
           <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Seleccionar Perfil de Acceso</label>
           <select 
@@ -102,16 +87,10 @@
             class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm bg-white focus:ring-2 focus:ring-emerald-600 focus:outline-none transition-all uppercase font-medium text-slate-700"
           >
             @for (role of availableRoles; track role) {
-              <option [value]="role">
-                @if (role === 'empleado') { 👤 Empleado (Estándar) }
-                @else if (role === 'hr' || role === 'rrhh') { 📊 Recursos Humanos (HR) }
-                @else if (role === 'vi') { ⚡ VI (Vigilancia / Operativa) }
-                @else if (role === 'fi') { 📁 FI (Financiero / Gestión) }
-                @else { {{ role | uppercase }} }
-              </option>
+              <option [value]="role">{{ etiquetasRol[role] }}</option>
             }
           </select>
-          <p class="text-[11px] text-slate-400 mt-1">Tu perfil por defecto es Empleado. Selecciona otro si tienes permisos especiales.</p>
+          <p class="text-[11px] text-slate-400 mt-1">Se ha preseleccionado tu perfil con más permisos. Puedes entrar con otro.</p>
         </div>
 
         <div class="flex items-center gap-2 pt-2">
@@ -120,7 +99,7 @@
             (click)="volverAEmail()"
             class="w-1/3 py-2.5 rounded-lg border border-slate-300 text-slate-600 font-medium text-xs hover:bg-slate-50 transition-colors"
           >
-            Cambiar email
+            Volver
           </button>
           
           <button 

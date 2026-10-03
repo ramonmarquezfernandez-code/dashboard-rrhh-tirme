@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { ETIQUETAS_ROL, Rol } from '../../services/permisos';
 
 @Component({
   selector: 'app-login',
@@ -11,54 +12,54 @@ import { AuthService } from '../../services/auth.service';
 })
 export class Login {
   private authService = inject(AuthService);
-  public readonly adminEmail = 'admin@admin.org';
+  // La app no usa zone.js: tras cada respuesta HTTP hay que pedir que se repinte
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  public readonly etiquetasRol = ETIQUETAS_ROL;
 
   public email = '';
   public password = '';
-  public selectedRole = 'empleado';
-  public availableRoles: string[] = ['empleado']; // Todos tienen empleado por defecto
+  public selectedRole: Rol = 'empleado';
+  public availableRoles: Rol[] = ['empleado']; // Todos tienen empleado por defecto
   
-  public step: 1 | 2 = 1; // 1: Pedir email, 2: Pedir contraseña y rol
+  public step: 1 | 2 = 1; // 1: Pedir correo y contraseña, 2: Elegir perfil
   public errorMessage = '';
   public isLoading = false;
 
-  public isAdminEmail() {
-    return this.email.trim().toLowerCase() === this.adminEmail;
-  }
-
-  // Paso 1: Verificar el email y cargar los roles desde Flask
-  public onCheckEmail() {
-    if (!this.email) {
-      this.errorMessage = 'Por favor, introduce tu correo electrónico.';
+  // Paso 1: Validar correo y contraseña y cargar los perfiles del usuario
+  public onCheckCredentials() {
+    if (!this.email || !this.password) {
+      this.errorMessage = 'Introduce tu correo electrónico y tu contraseña.';
       return;
     }
 
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.authService.obtenerRolesPorEmail(this.email).subscribe({
-      next: (response: any) => {
+    this.authService.obtenerRoles(this.email, this.password).subscribe({
+      next: (response) => {
         this.isLoading = false;
-        // response.roles contendrá un array como ['empleado', 'hr', 'vi']
-        this.availableRoles = response.roles && response.roles.length > 0 ? response.roles : ['empleado'];
-        this.selectedRole = 'empleado'; // Por defecto se selecciona empleado
+        // El servidor devuelve los roles ordenados por prioridad: ['hr', 'mando', 'empleado']
+        this.availableRoles = response.roles?.length ? response.roles : ['empleado'];
+        this.selectedRole = this.availableRoles[0]; // Se preselecciona el de mayor prioridad
 
-        if (this.isAdminEmail() || this.availableRoles.length === 1) {
+        if (this.availableRoles.length === 1) {
           this.onLogin();
         } else {
-          this.step = 2; // Elegimos el rol antes de validar el login
+          this.step = 2; // Credenciales correctas: falta elegir el perfil
         }
+        this.changeDetector.markForCheck();
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = err.error?.message || 'Correo no encontrado en la base de datos.';
+        this.errorMessage = err.error?.message || 'Correo o contraseña incorrectos.';
+        this.changeDetector.markForCheck();
       }
     });
   }
 
-  // Paso 2: Enviar credenciales completas con el rol elegido
+  // Paso 2 (o directo si solo hay un perfil): obtener el token con el rol elegido
   public onLogin() {
-    if (!this.isAdminEmail() && !this.password) {
+    if (!this.password) {
       this.errorMessage = 'Por favor, introduce tu contraseña.';
       return;
     }
@@ -69,10 +70,12 @@ export class Login {
     this.authService.login(this.email, this.password, this.selectedRole).subscribe({
       next: () => {
         this.isLoading = false;
+        this.changeDetector.markForCheck();
       },
       error: (err) => {
         this.isLoading = false;
         this.errorMessage = err.error?.message || 'Contraseña incorrecta.';
+        this.changeDetector.markForCheck();
       }
     });
   }

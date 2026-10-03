@@ -1,4 +1,6 @@
 import os
+from datetime import timedelta
+
 from dotenv import load_dotenv
 from sqlalchemy.engine import URL
 
@@ -25,3 +27,10 @@ class Config:
     )
     
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # JWT (flask-jwt-extended). Si no se define una clave propia, se usa SECRET_KEY.
+    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY') or SECRET_KEY
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=8)
+
+    # Necesario para que Flask-RESTX no convierta los errores de JWT en un 500
+    PROPAGATE_EXCEPTIONS = True

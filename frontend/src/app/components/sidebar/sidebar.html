@@ -14,6 +14,7 @@
         <span class="min-w-0">
           <span class="block text-[10px] uppercase tracking-wide text-slate-400">Usuario conectado</span>
           <span class="block truncate text-xs font-medium text-white">{{ authService.usuarioActual()?.email }}</span>
+          <span class="block truncate text-[11px] text-emerald-300">{{ etiquetaRol() }}</span>
         </span>
         <span class="text-slate-400 group-open:rotate-180 transition-transform">⌄</span>
       </summary>
@@ -30,62 +31,76 @@
 
   <!-- Menú de navegación -->
   <nav class="flex-1 min-h-0 overflow-y-auto p-4 space-y-1">
-    <a
-      routerLink="/resumen-general"
-      routerLinkActive="bg-slate-800 text-white"
-      class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors"
-    >
-      <!-- Icono y texto -->
-      <span>Resumen General</span>
-    </a>
-    <a
-      routerLink="/personas"
-      routerLinkActive="bg-tirme-green text-white"
-      class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
-    >
-      <span class="text-lg">👥</span>
-      <span class="font-medium">Personal</span>
-    </a>
-    <a
-      routerLink="/turnos"
-      routerLinkActive="bg-tirme-green text-white"
-      class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
-    >
-      <span class="text-lg">📅</span>
-      <span class="font-medium">Turnos y Horarios</span>
-    </a>
-    <a
-      routerLink="/horas-extra"
-      routerLinkActive="bg-tirme-green text-white"
-      class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
-    >
-      <span class="text-lg">📊</span>
-      <span class="font-medium">HE por periodos</span>
-    </a>
-    <a
-      routerLink="/horas-extra-empleados"
-      routerLinkActive="bg-tirme-green text-white"
-      class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
-    >
-      <span class="text-lg">👤</span>
-      <span class="font-medium">HE por empleado</span>
-    </a>
-    <a
-      routerLink="/ranking-combo"
-      routerLinkActive="bg-tirme-green text-white"
-      class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
-    >
-      <span class="text-lg">🏆</span>
-      <span class="font-medium">Ranking HE Combo</span>
-    </a>
-    <a
-      routerLink="/sp-retribuidas"
-      routerLinkActive="bg-tirme-green text-white"
-      class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
-    >
-      <span class="text-lg">📋</span>
-      <span class="font-medium">Total SP retribuidas</span>
-    </a>
+    @if (authService.puedeVer('resumen-general')) {
+      <a
+        routerLink="/resumen-general"
+        routerLinkActive="bg-slate-800 text-white"
+        class="flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors"
+      >
+        <!-- Icono y texto -->
+        <span>Resumen General</span>
+      </a>
+    }
+    @if (authService.puedeVer('personal')) {
+      <a
+        routerLink="/personal"
+        routerLinkActive="bg-tirme-green text-white"
+        class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+      >
+        <span class="text-lg">👥</span>
+        <span class="font-medium">Personal</span>
+      </a>
+    }
+    @if (authService.puedeVer('turnos')) {
+      <a
+        routerLink="/turnos"
+        routerLinkActive="bg-tirme-green text-white"
+        class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+      >
+        <span class="text-lg">📅</span>
+        <span class="font-medium">Turnos y Horarios</span>
+      </a>
+    }
+    @if (authService.puedeVer('horas-extra')) {
+      <a
+        routerLink="/horas-extra"
+        routerLinkActive="bg-tirme-green text-white"
+        class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+      >
+        <span class="text-lg">📊</span>
+        <span class="font-medium">HE por periodos</span>
+      </a>
+    }
+    @if (authService.puedeVer('horas-extra-empleados')) {
+      <a
+        routerLink="/horas-extra-empleados"
+        routerLinkActive="bg-tirme-green text-white"
+        class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+      >
+        <span class="text-lg">👤</span>
+        <span class="font-medium">HE por empleado</span>
+      </a>
+    }
+    @if (authService.puedeVer('ranking-combo')) {
+      <a
+        routerLink="/ranking-combo"
+        routerLinkActive="bg-tirme-green text-white"
+        class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+      >
+        <span class="text-lg">🏆</span>
+        <span class="font-medium">Ranking HE Combo</span>
+      </a>
+    }
+    @if (authService.puedeVer('sp-retribuidas')) {
+      <a
+        routerLink="/sp-retribuidas"
+        routerLinkActive="bg-tirme-green text-white"
+        class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+      >
+        <span class="text-lg">📋</span>
+        <span class="font-medium">Total SP retribuidas</span>
+      </a>
+    }
   </nav>
 
   <!-- Pie del Sidebar -->

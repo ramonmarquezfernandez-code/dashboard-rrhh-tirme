@@ -1,53 +1,95 @@
-from extensions import db
-from flask import Blueprint, jsonify, request
-from models import UserPayroll
+from flask import request
+from flask_restx import Namespace, Resource, fields
 
-# Creamos el blueprint con el prefijo /api para que coincida con Angular
-auth_bp = Blueprint('auth', __name__, url_prefix='/api')
-ADMIN_EMAIL = 'admin@admin.org'
+from services.acceso import requiere_rol, usuario_actual
+from services.auth_service import AuthService
+from services.rol_service import RolService
 
+# Namespace montado en /api (mismas URLs que usa el frontend Angular)
+auth_ns = Namespace('auth', description='Autenticación (bcrypt + JWT) y roles del usuario')
 
-@auth_bp.route('/get-roles', methods=['POST'])
-def get_roles():
-  data = request.get_json() or {}
-  email = str(data.get('email') or '').strip().lower()
+MENSAJE_CREDENCIALES = 'Correo o contraseña incorrectos.'
 
-  if not email:
-    return jsonify({'message': 'El correo es obligatorio'}), 400
+get_roles_model = auth_ns.model('GetRolesRequest', {
+    'email': fields.String(required=True, description='Correo del usuario'),
+    'password': fields.String(required=True, description='Contraseña'),
+})
 
-  if email == ADMIN_EMAIL:
-    return jsonify({'success': True, 'roles': ['empleado']}), 200
-
-  usuario = db.session.scalar(
-      db.select(UserPayroll).where(db.func.lower(UserPayroll.EMAIL) == email)
-  )
-  if not usuario or not usuario.ACTIVE:
-    return jsonify({'message': 'Correo no encontrado en la base de datos.'}), 404
-
-  return jsonify({'success': True, 'roles': ['empleado']}), 200
+login_model = auth_ns.model('LoginRequest', {
+    'email': fields.String(required=True, description='Correo del usuario'),
+    'password': fields.String(required=True, description='Contraseña'),
+    'rol': fields.String(description="Rol activo: 'hr', 'mando' o 'empleado' (por defecto, el de mayor prioridad)"),
+})
 
 
-@auth_bp.route('/login', methods=['POST'])
-def login():
-  data = request.get_json() or {}
-  email = str(data.get('email') or '').strip().lower()
-  password = data.get('password') or ''
-  rol_seleccionado = data.get('rol', 'empleado')
+def _datos_usuario(usuario, rol, roles):
+    return {
+        'email': (usuario.EMAIL or '').lower(),
+        'pernr': usuario.NUMPER,
+        'nombre': ' '.join(filter(None, [usuario.NAME, usuario.SURNAME])),
+        'rolActivo': rol,
+        'roles': roles,
+    }
 
-  if not email:
-    return jsonify({'message': 'El correo es obligatorio'}), 400
 
-  if email != ADMIN_EMAIL:
-    usuario = db.session.scalar(
-        db.select(UserPayroll).where(db.func.lower(UserPayroll.EMAIL) == email)
-    )
-    if not usuario or not usuario.ACTIVE or not password or password != usuario.PASSWORD:
-      return jsonify({'message': 'Correo o contraseña incorrectos.'}), 401
+@auth_ns.route('/get-roles')
+class GetRoles(Resource):
+    @auth_ns.expect(get_roles_model)
+    def post(self):
+        """Valida las credenciales y devuelve los roles del usuario (siempre incluye 'empleado').
 
-  return jsonify({
-      'success': True,
-      'user': {
-          'email': email,
-          'rolActivo': rol_seleccionado,
-      },
-  }), 200
+        Exige la contraseña para no revelar qué correos existen ni qué perfiles tienen.
+        """
+        data = request.get_json(silent=True) or {}
+        if not str(data.get('email') or '').strip():
+            auth_ns.abort(400, 'El correo es obligatorio')
+
+        usuario = AuthService.buscar_usuario_activo(data['email'])
+        if not AuthService.verificar_password(usuario, data.get('password')):
+            auth_ns.abort(401, MENSAJE_CREDENCIALES)
+
+        return {'success': True, 'roles': RolService(usuario.NUMPER).roles_disponibles()}, 200
+
+
+@auth_ns.route('/login')
+class Login(Resource):
+    @auth_ns.expect(login_model)
+    def post(self):
+        """Valida credenciales y rol elegido y devuelve un JWT."""
+        data = request.get_json(silent=True) or {}
+        if not str(data.get('email') or '').strip():
+            auth_ns.abort(400, 'El correo es obligatorio')
+
+        usuario = AuthService.buscar_usuario_activo(data['email'])
+        if not AuthService.verificar_password(usuario, data.get('password')):
+            auth_ns.abort(401, MENSAJE_CREDENCIALES)
+
+        # El servidor comprueba que el usuario posee el rol que ha elegido
+        rol_service = RolService(usuario.NUMPER)
+        rol = data.get('rol') or rol_service.rol_por_defecto()
+        if not rol_service.tiene_rol(rol):
+            auth_ns.abort(403, 'No tienes asignado el perfil seleccionado.')
+
+        return {
+            'success': True,
+            'token': AuthService.emitir_token(usuario, rol, rol_service),
+            'user': _datos_usuario(usuario, rol, rol_service.roles_disponibles()),
+        }, 200
+
+
+@auth_ns.route('/me')
+class Me(Resource):
+    @auth_ns.doc(security='Bearer')
+    @requiere_rol()
+    def get(self):
+        """Datos de la sesión actual según el JWT."""
+        actual = usuario_actual()
+        return {
+            'success': True,
+            'user': {
+                'email': actual.email,
+                'pernr': actual.pernr,
+                'rolActivo': actual.rol_activo,
+                'codgrs': sorted(actual.codgrs),
+            },
+        }, 200
