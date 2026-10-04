@@ -25,9 +25,9 @@
       </label>
       <label>Año
         <select [ngModel]="anio" (ngModelChange)="cambiarAnio($event)">
-          <option [value]="2026">2026</option>
-          <option [value]="2025">2025</option>
-          <option [value]="2024">2024</option>
+          @for (a of anios; track a) {
+            <option [value]="a">{{ a }}</option>
+          }
         </select>
       </label>
       <label>Periodo

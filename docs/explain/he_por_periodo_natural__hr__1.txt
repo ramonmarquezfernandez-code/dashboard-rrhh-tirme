@@ -1,0 +1,98 @@
+# HE por periodos, año natural 2025 · perfil hr · sentencia 1
+
+SELECT month(zparte.`PADAT`) AS mes, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total 
+FROM zparte 
+WHERE zparte.`PADAT` BETWEEN '2025-01-01' AND '2025-12-31' GROUP BY month(zparte.`PADAT`)
+
+## 1. Solo clave primaria — mediana 91.18 ms, mínimo 87.81 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=ALL | possible_keys=None | key=None | key_len=None | ref=None | rows=99931 | Extra=Using where; Using temporary; Using filesort
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 85.57824722,
+    "filesort": {
+      "sort_key": "month(zparte.PADAT)",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "ALL",
+              "loops": 1,
+              "rows": 99931,
+              "cost": 18.384465,
+              "filtered": 100,
+              "attached_condition": "zparte.PADAT between '2025-01-01' and '2025-12-31'"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
+## 2. Índices de producción — mediana 95.54 ms, mínimo 86.68 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=ALL | possible_keys=idx_mes_padat | key=None | key_len=None | ref=None | rows=97505 | Extra=Using where; Using temporary; Using filesort
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 68.43105177,
+    "filesort": {
+      "sort_key": "month(zparte.PADAT)",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "ALL",
+              "possible_keys": [
+                "idx_mes_padat"
+              ],
+              "loops": 1,
+              "rows": 97505,
+              "cost": 17.989027,
+              "filtered": 77.06476593,
+              "attached_condition": "zparte.PADAT between '2025-01-01' and '2025-12-31'"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
+## 3. Producción + propuestos — mediana 84.99 ms, mínimo 79.5 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=ALL | possible_keys=idx_mes_padat | key=None | key_len=None | ref=None | rows=94747 | Extra=Using where; Using temporary; Using filesort
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 67.98149777,
+    "filesort": {
+      "sort_key": "month(zparte.PADAT)",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "ALL",
+              "possible_keys": [
+                "idx_mes_padat"
+              ],
+              "loops": 1,
+              "rows": 94747,
+              "cost": 17.539473,
+              "filtered": 79.30805206,
+              "attached_condition": "zparte.PADAT between '2025-01-01' and '2025-12-31'"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

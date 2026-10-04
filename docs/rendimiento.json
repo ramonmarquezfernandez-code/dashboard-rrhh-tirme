@@ -1,0 +1,2422 @@
+{
+  "contexto": {
+    "fecha": "2026-10-03 18:36",
+    "servidor": "MariaDB 12.3.3-MariaDB-ubu2404",
+    "equipo": "Windows 11, AMD64, Python 3.13.14",
+    "datos": "generar_datos.py con semilla 2026, fecha final 2026-10-03, ~100.000 partes",
+    "filas": {
+      "zparte": 99906,
+      "userpayroll": 250,
+      "zgrroles": 66,
+      "zperiodos": 34
+    },
+    "empleados_grupo": 26,
+    "repeticiones": 7,
+    "query_cache": "OFF"
+  },
+  "escenarios": [
+    {
+      "clave": "solo_pk",
+      "titulo": "1. Solo clave primaria",
+      "corto": "1",
+      "descripcion": "se eliminan todos los índices secundarios de zparte (incluidos los UNIQUE).",
+      "indices": []
+    },
+    {
+      "clave": "produccion",
+      "titulo": "2. Índices de producción",
+      "corto": "2",
+      "descripcion": "los 20 índices secundarios del esquema de producción.",
+      "indices": [
+        [
+          "idx_ejer_month",
+          false,
+          [
+            "EJERC",
+            "MES"
+          ]
+        ],
+        [
+          "idx_mes_ejer",
+          false,
+          [
+            "MES",
+            "EJERC"
+          ]
+        ],
+        [
+          "idx_mes_mes_ejerc_padat",
+          false,
+          [
+            "MES",
+            "EJERC",
+            "PADAT"
+          ]
+        ],
+        [
+          "idx_mes_padat",
+          false,
+          [
+            "PADAT"
+          ]
+        ],
+        [
+          "idx_unico_persona_dia",
+          true,
+          [
+            "PERNR",
+            "PADAT",
+            "TIPO",
+            "TURNO"
+          ]
+        ],
+        [
+          "idx_updat",
+          false,
+          [
+            "UPDAT"
+          ]
+        ],
+        [
+          "idx_zparte_codgr",
+          false,
+          [
+            "CODGR"
+          ]
+        ],
+        [
+          "idx_zparte_ejerc",
+          false,
+          [
+            "EJERC"
+          ]
+        ],
+        [
+          "idx_zparte_ejerc_codgr",
+          false,
+          [
+            "EJERC",
+            "CODGR"
+          ]
+        ],
+        [
+          "idx_zparte_ejerc_mes_codgr_stat",
+          false,
+          [
+            "EJERC",
+            "MES",
+            "CODGR",
+            "STAT"
+          ]
+        ],
+        [
+          "idx_zparte_perfide",
+          false,
+          [
+            "PERFIDE"
+          ]
+        ],
+        [
+          "idx_Zparte_pernr_group",
+          false,
+          [
+            "PERNR",
+            "CODGR"
+          ]
+        ],
+        [
+          "idx_zparte_pervbde",
+          false,
+          [
+            "PERVBDE"
+          ]
+        ],
+        [
+          "ZPARTE_CATEG_IDX",
+          false,
+          [
+            "CATEG"
+          ]
+        ],
+        [
+          "ZPARTE_dpto_IDX",
+          false,
+          [
+            "DPTO"
+          ]
+        ],
+        [
+          "ZPARTE_GROUP_IDX",
+          false,
+          [
+            "CODGR"
+          ]
+        ],
+        [
+          "zparte_MANDT_IDX",
+          true,
+          [
+            "MANDT"
+          ]
+        ],
+        [
+          "zparte_PERNR_IDX",
+          false,
+          [
+            "PERNR",
+            "PADAT"
+          ]
+        ],
+        [
+          "zparte_PERNR_MES_EJERC_IDX",
+          false,
+          [
+            "PERNR",
+            "MES",
+            "EJERC"
+          ]
+        ],
+        [
+          "ZPARTE_USER_IDX",
+          false,
+          [
+            "USER_ID"
+          ]
+        ]
+      ]
+    },
+    {
+      "clave": "propuestos",
+      "titulo": "3. Producción + propuestos",
+      "corto": "3",
+      "descripcion": "los de producción más 2 índices propuestos (ver más abajo).",
+      "indices": [
+        [
+          "idx_ejer_month",
+          false,
+          [
+            "EJERC",
+            "MES"
+          ]
+        ],
+        [
+          "idx_mes_ejer",
+          false,
+          [
+            "MES",
+            "EJERC"
+          ]
+        ],
+        [
+          "idx_mes_mes_ejerc_padat",
+          false,
+          [
+            "MES",
+            "EJERC",
+            "PADAT"
+          ]
+        ],
+        [
+          "idx_mes_padat",
+          false,
+          [
+            "PADAT"
+          ]
+        ],
+        [
+          "idx_unico_persona_dia",
+          true,
+          [
+            "PERNR",
+            "PADAT",
+            "TIPO",
+            "TURNO"
+          ]
+        ],
+        [
+          "idx_updat",
+          false,
+          [
+            "UPDAT"
+          ]
+        ],
+        [
+          "idx_zparte_codgr",
+          false,
+          [
+            "CODGR"
+          ]
+        ],
+        [
+          "idx_zparte_ejerc",
+          false,
+          [
+            "EJERC"
+          ]
+        ],
+        [
+          "idx_zparte_ejerc_codgr",
+          false,
+          [
+            "EJERC",
+            "CODGR"
+          ]
+        ],
+        [
+          "idx_zparte_ejerc_mes_codgr_stat",
+          false,
+          [
+            "EJERC",
+            "MES",
+            "CODGR",
+            "STAT"
+          ]
+        ],
+        [
+          "idx_zparte_perfide",
+          false,
+          [
+            "PERFIDE"
+          ]
+        ],
+        [
+          "idx_Zparte_pernr_group",
+          false,
+          [
+            "PERNR",
+            "CODGR"
+          ]
+        ],
+        [
+          "idx_zparte_pervbde",
+          false,
+          [
+            "PERVBDE"
+          ]
+        ],
+        [
+          "ZPARTE_CATEG_IDX",
+          false,
+          [
+            "CATEG"
+          ]
+        ],
+        [
+          "ZPARTE_dpto_IDX",
+          false,
+          [
+            "DPTO"
+          ]
+        ],
+        [
+          "ZPARTE_GROUP_IDX",
+          false,
+          [
+            "CODGR"
+          ]
+        ],
+        [
+          "zparte_MANDT_IDX",
+          true,
+          [
+            "MANDT"
+          ]
+        ],
+        [
+          "zparte_PERNR_IDX",
+          false,
+          [
+            "PERNR",
+            "PADAT"
+          ]
+        ],
+        [
+          "zparte_PERNR_MES_EJERC_IDX",
+          false,
+          [
+            "PERNR",
+            "MES",
+            "EJERC"
+          ]
+        ],
+        [
+          "ZPARTE_USER_IDX",
+          false,
+          [
+            "USER_ID"
+          ]
+        ],
+        [
+          "idx_zparte_codgr_padat",
+          false,
+          [
+            "CODGR",
+            "PADAT"
+          ]
+        ],
+        [
+          "idx_zparte_sp_padat",
+          false,
+          [
+            "SP",
+            "PADAT"
+          ]
+        ]
+      ]
+    }
+  ],
+  "sentencias": [
+    {
+      "consulta": "he_por_periodo",
+      "perfil": "hr",
+      "orden": 1,
+      "sql": "SELECT zparte.`MES` AS mes, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte \nWHERE zparte.`EJERC` = '2025' AND zparte.`MES` IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') GROUP BY zparte.`MES`",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 87.03,
+          "min_ms": 85.61,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 91.9,
+          "min_ms": 90.19,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "97505",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 89.82,
+          "min_ms": 87.76,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "94747",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo",
+      "perfil": "hr",
+      "orden": 2,
+      "sql": "SELECT zparte.`DPTO` AS departamento, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte \nWHERE zparte.`EJERC` = '2025' AND zparte.`MES` IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') GROUP BY zparte.`DPTO` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`DPTO` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 116.58,
+          "min_ms": 113.88,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 121.38,
+          "min_ms": 114.53,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "97505",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 121.3,
+          "min_ms": 116.39,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "94747",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo",
+      "perfil": "hr",
+      "orden": 3,
+      "sql": "SELECT userpayroll.`NAME` AS nombre, userpayroll.`SURNAME` AS apellidos, zparte.`PERNR` AS id, zparte.`DPTO` AS departamento, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte LEFT OUTER JOIN userpayroll ON zparte.`PERNR` = userpayroll.`NUMPER` \nWHERE zparte.`EJERC` = '2025' AND zparte.`MES` IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') GROUP BY zparte.`PERNR`, userpayroll.`NAME`, userpayroll.`SURNAME`, zparte.`DPTO` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`PERNR` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 184.44,
+          "min_ms": 179.67,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 193.4,
+          "min_ms": 182.47,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "97505",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 241.46,
+          "min_ms": 204.68,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "94747",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo_natural",
+      "perfil": "hr",
+      "orden": 1,
+      "sql": "SELECT month(zparte.`PADAT`) AS mes, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte \nWHERE zparte.`PADAT` BETWEEN '2025-01-01' AND '2025-12-31' GROUP BY month(zparte.`PADAT`)",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 91.18,
+          "min_ms": 87.81,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 95.54,
+          "min_ms": 86.68,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "97505",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 84.99,
+          "min_ms": 79.5,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "94747",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo_natural",
+      "perfil": "hr",
+      "orden": 2,
+      "sql": "SELECT zparte.`DPTO` AS departamento, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte \nWHERE zparte.`PADAT` BETWEEN '2025-01-01' AND '2025-12-31' GROUP BY zparte.`DPTO` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`DPTO` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 106.9,
+          "min_ms": 103.08,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 123.17,
+          "min_ms": 114.35,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "97505",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 105.53,
+          "min_ms": 100.68,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "94747",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo_natural",
+      "perfil": "hr",
+      "orden": 3,
+      "sql": "SELECT userpayroll.`NAME` AS nombre, userpayroll.`SURNAME` AS apellidos, zparte.`PERNR` AS id, zparte.`DPTO` AS departamento, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte LEFT OUTER JOIN userpayroll ON zparte.`PERNR` = userpayroll.`NUMPER` \nWHERE zparte.`PADAT` BETWEEN '2025-01-01' AND '2025-12-31' GROUP BY zparte.`PERNR`, userpayroll.`NAME`, userpayroll.`SURNAME`, zparte.`DPTO` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`PERNR` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 169.21,
+          "min_ms": 164.26,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 175.39,
+          "min_ms": 167.97,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "97505",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 176.34,
+          "min_ms": 170.94,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "94747",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo_junio",
+      "perfil": "hr",
+      "orden": 1,
+      "sql": "SELECT zparte.`MES` AS mes, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte \nWHERE zparte.`EJERC` = '2025' AND zparte.`MES` = '06' GROUP BY zparte.`MES`",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 52.31,
+          "min_ms": 50.16,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 7.12,
+          "min_ms": 6.99,
+          "explain": {
+            "tipo": "ref",
+            "indice": "idx_ejer_month",
+            "filas": "3281",
+            "extra": "Using index condition"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 7.63,
+          "min_ms": 7.45,
+          "explain": {
+            "tipo": "ref",
+            "indice": "idx_ejer_month",
+            "filas": "3281",
+            "extra": "Using index condition"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo_junio",
+      "perfil": "hr",
+      "orden": 2,
+      "sql": "SELECT zparte.`DPTO` AS departamento, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte \nWHERE zparte.`EJERC` = '2025' AND zparte.`MES` = '06' GROUP BY zparte.`DPTO` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`DPTO` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 64.15,
+          "min_ms": 61.04,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 11.16,
+          "min_ms": 10.73,
+          "explain": {
+            "tipo": "ref",
+            "indice": "idx_ejer_month",
+            "filas": "3281",
+            "extra": "Using index condition; Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 11.36,
+          "min_ms": 11.0,
+          "explain": {
+            "tipo": "ref",
+            "indice": "idx_ejer_month",
+            "filas": "3281",
+            "extra": "Using index condition; Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo_junio",
+      "perfil": "hr",
+      "orden": 3,
+      "sql": "SELECT userpayroll.`NAME` AS nombre, userpayroll.`SURNAME` AS apellidos, zparte.`PERNR` AS id, zparte.`DPTO` AS departamento, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte LEFT OUTER JOIN userpayroll ON zparte.`PERNR` = userpayroll.`NUMPER` \nWHERE zparte.`EJERC` = '2025' AND zparte.`MES` = '06' GROUP BY zparte.`PERNR`, userpayroll.`NAME`, userpayroll.`SURNAME`, zparte.`DPTO` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`PERNR` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 76.01,
+          "min_ms": 73.99,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 20.79,
+          "min_ms": 19.59,
+          "explain": {
+            "tipo": "ref",
+            "indice": "idx_ejer_month",
+            "filas": "3281",
+            "extra": "Using index condition; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 19.89,
+          "min_ms": 19.1,
+          "explain": {
+            "tipo": "ref",
+            "indice": "idx_ejer_month",
+            "filas": "3281",
+            "extra": "Using index condition; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_empleado",
+      "perfil": "hr",
+      "orden": 1,
+      "sql": "SELECT zparte.`PERNR` AS pernr, userpayroll.`NAME` AS nombre, userpayroll.`SURNAME` AS apellidos, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS horas_extra \nFROM zparte LEFT OUTER JOIN userpayroll ON zparte.`PERNR` = userpayroll.`NUMPER` \nWHERE zparte.`EJERC` = '2025' AND zparte.`MES` IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') GROUP BY zparte.`PERNR`, userpayroll.`NAME`, userpayroll.`SURNAME` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`PERNR` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 150.82,
+          "min_ms": 143.36,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 145.38,
+          "min_ms": 142.62,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "97505",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 148.49,
+          "min_ms": 142.95,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "94747",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_empleado",
+      "perfil": "hr",
+      "orden": 2,
+      "sql": "SELECT DISTINCT zparte.`DPTO` AS `zparte_DPTO` \nFROM zparte \nWHERE zparte.`EJERC` = '2025' AND zparte.`MES` IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') AND zparte.`DPTO` IS NOT NULL ORDER BY zparte.`DPTO` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 86.66,
+          "min_ms": 63.22,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 59.32,
+          "min_ms": 57.9,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "97505",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 54.04,
+          "min_ms": 50.73,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "94747",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "ranking_combo",
+      "perfil": "hr",
+      "orden": 1,
+      "sql": "SELECT zparte.`PERNR` AS pernr, userpayroll.`NAME` AS nombre, userpayroll.`SURNAME` AS apellidos, coalesce(sum(zparte.`DLCOP` + zparte.`DFCOP` + zparte.`NLCOP` + zparte.`NFCOP`), 0) AS combo_programadas, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO` + zparte.`DLF` + zparte.`DFF` + zparte.`NLF` + zparte.`NFF` + zparte.`DLCOP` + zparte.`DFCOP` + zparte.`NLCOP` + zparte.`NFCOP`), 0) AS total_he, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS he_compensables, coalesce(sum(zparte.`DL` * 1.6e0 + zparte.`DF` * 2.0e0 + zparte.`NL` * 2.0e0 + zparte.`NF` * 2.5e0), 0) AS he_compensables_convertidas \nFROM zparte LEFT OUTER JOIN userpayroll ON zparte.`PERNR` = userpayroll.`NUMPER` \nWHERE zparte.`EJERC` = '2025' AND zparte.`MES` IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') GROUP BY zparte.`PERNR`, userpayroll.`NAME`, userpayroll.`SURNAME` ORDER BY sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO` + zparte.`DLF` + zparte.`DFF` + zparte.`NLF` + zparte.`NFF` + zparte.`DLCOP` + zparte.`DFCOP` + zparte.`NLCOP` + zparte.`NFCOP`) DESC, zparte.`PERNR` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 192.07,
+          "min_ms": 178.62,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 187.18,
+          "min_ms": 175.62,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "97505",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 198.96,
+          "min_ms": 176.04,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "94747",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "ranking_combo",
+      "perfil": "hr",
+      "orden": 2,
+      "sql": "SELECT DISTINCT zparte.`DPTO` AS `zparte_DPTO` \nFROM zparte \nWHERE zparte.`EJERC` = '2025' AND zparte.`MES` IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') AND zparte.`DPTO` IS NOT NULL ORDER BY zparte.`DPTO` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 53.13,
+          "min_ms": 51.52,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 59.35,
+          "min_ms": 57.94,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "97505",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 51.59,
+          "min_ms": 50.54,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "94747",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "sp_resumen",
+      "perfil": "hr",
+      "orden": 1,
+      "sql": "SELECT userpayroll.`NAME` AS nombre, userpayroll.`SURNAME` AS apellidos, zparte.`PERNR` AS id, zparte.`DPTO` AS departamento, count(*) AS sp \nFROM zparte LEFT OUTER JOIN userpayroll ON zparte.`PERNR` = userpayroll.`NUMPER` \nWHERE zparte.`PADAT` BETWEEN '2025-10-03' AND '2026-10-03' AND zparte.`SP` IN ('t', 'X', '1', 'S') GROUP BY zparte.`PERNR`, userpayroll.`NAME`, userpayroll.`SURNAME`, zparte.`DPTO` ORDER BY count(*) DESC, zparte.`PERNR` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 39.61,
+          "min_ms": 38.54,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 44.06,
+          "min_ms": 40.69,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "97505",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 6.4,
+          "min_ms": 6.29,
+          "explain": {
+            "tipo": "range",
+            "indice": "idx_zparte_sp_padat",
+            "filas": "860",
+            "extra": "Using index condition; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "sp_resumen",
+      "perfil": "hr",
+      "orden": 2,
+      "sql": "SELECT zparte.`DPTO` AS departamento, count(*) AS sp \nFROM zparte \nWHERE zparte.`PADAT` BETWEEN '2025-10-03' AND '2026-10-03' AND zparte.`SP` IN ('t', 'X', '1', 'S') GROUP BY zparte.`DPTO` ORDER BY count(*) DESC, zparte.`DPTO` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 37.93,
+          "min_ms": 36.86,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 38.07,
+          "min_ms": 36.67,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "97505",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 3.01,
+          "min_ms": 2.56,
+          "explain": {
+            "tipo": "range",
+            "indice": "idx_zparte_sp_padat",
+            "filas": "860",
+            "extra": "Using index condition; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "sp_resumen",
+      "perfil": "hr",
+      "orden": 3,
+      "sql": "SELECT userpayroll.`NAME` AS nombre, userpayroll.`SURNAME` AS apellidos, zparte.`PERNR` AS id, zparte.`DPTO` AS departamento, count(*) AS sp \nFROM zparte LEFT OUTER JOIN userpayroll ON zparte.`PERNR` = userpayroll.`NUMPER` \nWHERE zparte.`PADAT` BETWEEN '2024-10-03' AND '2026-10-03' AND zparte.`SP` IN ('t', 'X', '1', 'S') GROUP BY zparte.`PERNR`, userpayroll.`NAME`, userpayroll.`SURNAME`, zparte.`DPTO` ORDER BY count(*) DESC, zparte.`PERNR` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 47.06,
+          "min_ms": 44.3,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 44.2,
+          "min_ms": 43.25,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "97505",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 10.68,
+          "min_ms": 10.29,
+          "explain": {
+            "tipo": "range",
+            "indice": "idx_zparte_sp_padat",
+            "filas": "1798",
+            "extra": "Using index condition; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "sp_resumen",
+      "perfil": "hr",
+      "orden": 4,
+      "sql": "SELECT zparte.`DPTO` AS departamento, count(*) AS sp \nFROM zparte \nWHERE zparte.`PADAT` BETWEEN '2024-10-03' AND '2026-10-03' AND zparte.`SP` IN ('t', 'X', '1', 'S') GROUP BY zparte.`DPTO` ORDER BY count(*) DESC, zparte.`DPTO` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 39.94,
+          "min_ms": 39.29,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 39.91,
+          "min_ms": 37.34,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "97505",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 5.19,
+          "min_ms": 4.98,
+          "explain": {
+            "tipo": "range",
+            "indice": "idx_zparte_sp_padat",
+            "filas": "1798",
+            "extra": "Using index condition; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "ejercicios",
+      "perfil": "hr",
+      "orden": 1,
+      "sql": "SELECT DISTINCT zparte.`EJERC` AS `zparte_EJERC` \nFROM zparte \nWHERE zparte.`EJERC` IS NOT NULL",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 49.86,
+          "min_ms": 48.19,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 0.85,
+          "min_ms": 0.8,
+          "explain": {
+            "tipo": "range",
+            "indice": "idx_ejer_month",
+            "filas": "3",
+            "extra": "Using where; Using index for group-by"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 0.82,
+          "min_ms": 0.6,
+          "explain": {
+            "tipo": "range",
+            "indice": "idx_ejer_month",
+            "filas": "3",
+            "extra": "Using where; Using index for group-by"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo",
+      "perfil": "mando",
+      "orden": 1,
+      "sql": "SELECT zparte.`MES` AS mes, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte \nWHERE (zparte.`PERNR` = '00000105' OR zparte.`CODGR` IN (3)) AND zparte.`EJERC` = '2025' AND zparte.`MES` IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') GROUP BY zparte.`MES`",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 62.34,
+          "min_ms": 61.33,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 13.24,
+          "min_ms": 12.42,
+          "explain": {
+            "tipo": "index_merge",
+            "indice": "zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr",
+            "filas": "3776",
+            "extra": "Using sort_union(zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr); Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 13.46,
+          "min_ms": 12.17,
+          "explain": {
+            "tipo": "index_merge",
+            "indice": "zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr",
+            "filas": "3776",
+            "extra": "Using sort_union(zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr); Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo",
+      "perfil": "mando",
+      "orden": 2,
+      "sql": "SELECT zparte.`DPTO` AS departamento, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte \nWHERE (zparte.`PERNR` = '00000105' OR zparte.`CODGR` IN (3)) AND zparte.`EJERC` = '2025' AND zparte.`MES` IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') GROUP BY zparte.`DPTO` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`DPTO` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 68.71,
+          "min_ms": 65.0,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 13.94,
+          "min_ms": 13.83,
+          "explain": {
+            "tipo": "index_merge",
+            "indice": "zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr",
+            "filas": "3776",
+            "extra": "Using sort_union(zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr); Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 14.52,
+          "min_ms": 14.34,
+          "explain": {
+            "tipo": "index_merge",
+            "indice": "zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr",
+            "filas": "3776",
+            "extra": "Using sort_union(zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr); Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo",
+      "perfil": "mando",
+      "orden": 3,
+      "sql": "SELECT userpayroll.`NAME` AS nombre, userpayroll.`SURNAME` AS apellidos, zparte.`PERNR` AS id, zparte.`DPTO` AS departamento, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte LEFT OUTER JOIN userpayroll ON zparte.`PERNR` = userpayroll.`NUMPER` \nWHERE (zparte.`PERNR` = '00000105' OR zparte.`CODGR` IN (3)) AND zparte.`EJERC` = '2025' AND zparte.`MES` IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') GROUP BY zparte.`PERNR`, userpayroll.`NAME`, userpayroll.`SURNAME`, zparte.`DPTO` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`PERNR` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 114.42,
+          "min_ms": 88.78,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 20.71,
+          "min_ms": 20.39,
+          "explain": {
+            "tipo": "index_merge",
+            "indice": "zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr",
+            "filas": "3776",
+            "extra": "Using sort_union(zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr); Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 21.38,
+          "min_ms": 21.05,
+          "explain": {
+            "tipo": "index_merge",
+            "indice": "zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr",
+            "filas": "3776",
+            "extra": "Using sort_union(zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr); Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo_natural",
+      "perfil": "mando",
+      "orden": 1,
+      "sql": "SELECT month(zparte.`PADAT`) AS mes, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte \nWHERE (zparte.`PERNR` = '00000105' OR zparte.`CODGR` IN (3)) AND zparte.`PADAT` BETWEEN '2025-01-01' AND '2025-12-31' GROUP BY month(zparte.`PADAT`)",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 101.82,
+          "min_ms": 88.24,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 57.09,
+          "min_ms": 55.86,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "97505",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 11.42,
+          "min_ms": 11.31,
+          "explain": {
+            "tipo": "index_merge",
+            "indice": "idx_unico_persona_dia,idx_zparte_codgr_padat",
+            "filas": "3755",
+            "extra": "Using sort_union(idx_unico_persona_dia,idx_zparte_codgr_padat); Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo_natural",
+      "perfil": "mando",
+      "orden": 2,
+      "sql": "SELECT zparte.`DPTO` AS departamento, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte \nWHERE (zparte.`PERNR` = '00000105' OR zparte.`CODGR` IN (3)) AND zparte.`PADAT` BETWEEN '2025-01-01' AND '2025-12-31' GROUP BY zparte.`DPTO` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`DPTO` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 69.71,
+          "min_ms": 64.78,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 70.93,
+          "min_ms": 69.34,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "97505",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 14.56,
+          "min_ms": 13.52,
+          "explain": {
+            "tipo": "index_merge",
+            "indice": "idx_unico_persona_dia,idx_zparte_codgr_padat",
+            "filas": "3755",
+            "extra": "Using sort_union(idx_unico_persona_dia,idx_zparte_codgr_padat); Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo_natural",
+      "perfil": "mando",
+      "orden": 3,
+      "sql": "SELECT userpayroll.`NAME` AS nombre, userpayroll.`SURNAME` AS apellidos, zparte.`PERNR` AS id, zparte.`DPTO` AS departamento, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte LEFT OUTER JOIN userpayroll ON zparte.`PERNR` = userpayroll.`NUMPER` \nWHERE (zparte.`PERNR` = '00000105' OR zparte.`CODGR` IN (3)) AND zparte.`PADAT` BETWEEN '2025-01-01' AND '2025-12-31' GROUP BY zparte.`PERNR`, userpayroll.`NAME`, userpayroll.`SURNAME`, zparte.`DPTO` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`PERNR` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 81.69,
+          "min_ms": 71.22,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 93.0,
+          "min_ms": 77.0,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "97505",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 22.16,
+          "min_ms": 21.88,
+          "explain": {
+            "tipo": "index_merge",
+            "indice": "idx_unico_persona_dia,idx_zparte_codgr_padat",
+            "filas": "3755",
+            "extra": "Using sort_union(idx_unico_persona_dia,idx_zparte_codgr_padat); Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo_junio",
+      "perfil": "mando",
+      "orden": 1,
+      "sql": "SELECT zparte.`MES` AS mes, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte \nWHERE (zparte.`PERNR` = '00000105' OR zparte.`CODGR` IN (3)) AND zparte.`EJERC` = '2025' AND zparte.`MES` = '06' GROUP BY zparte.`MES`",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 54.15,
+          "min_ms": 52.84,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 1.99,
+          "min_ms": 1.89,
+          "explain": {
+            "tipo": "index_merge",
+            "indice": "zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_mes_codgr_stat",
+            "filas": "347",
+            "extra": "Using sort_union(zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_mes_codgr_stat); Using where"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 1.98,
+          "min_ms": 1.77,
+          "explain": {
+            "tipo": "index_merge",
+            "indice": "zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_mes_codgr_stat",
+            "filas": "347",
+            "extra": "Using sort_union(zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_mes_codgr_stat); Using where"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo_junio",
+      "perfil": "mando",
+      "orden": 2,
+      "sql": "SELECT zparte.`DPTO` AS departamento, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte \nWHERE (zparte.`PERNR` = '00000105' OR zparte.`CODGR` IN (3)) AND zparte.`EJERC` = '2025' AND zparte.`MES` = '06' GROUP BY zparte.`DPTO` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`DPTO` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 76.63,
+          "min_ms": 68.49,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 2.28,
+          "min_ms": 2.2,
+          "explain": {
+            "tipo": "index_merge",
+            "indice": "zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_mes_codgr_stat",
+            "filas": "347",
+            "extra": "Using sort_union(zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_mes_codgr_stat); Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 2.45,
+          "min_ms": 2.24,
+          "explain": {
+            "tipo": "index_merge",
+            "indice": "zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_mes_codgr_stat",
+            "filas": "347",
+            "extra": "Using sort_union(zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_mes_codgr_stat); Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo_junio",
+      "perfil": "mando",
+      "orden": 3,
+      "sql": "SELECT userpayroll.`NAME` AS nombre, userpayroll.`SURNAME` AS apellidos, zparte.`PERNR` AS id, zparte.`DPTO` AS departamento, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte LEFT OUTER JOIN userpayroll ON zparte.`PERNR` = userpayroll.`NUMPER` \nWHERE (zparte.`PERNR` = '00000105' OR zparte.`CODGR` IN (3)) AND zparte.`EJERC` = '2025' AND zparte.`MES` = '06' GROUP BY zparte.`PERNR`, userpayroll.`NAME`, userpayroll.`SURNAME`, zparte.`DPTO` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`PERNR` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 63.93,
+          "min_ms": 61.87,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 3.43,
+          "min_ms": 3.3,
+          "explain": {
+            "tipo": "index_merge",
+            "indice": "zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_mes_codgr_stat",
+            "filas": "347",
+            "extra": "Using sort_union(zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_mes_codgr_stat); Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 3.42,
+          "min_ms": 3.22,
+          "explain": {
+            "tipo": "index_merge",
+            "indice": "zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_mes_codgr_stat",
+            "filas": "347",
+            "extra": "Using sort_union(zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_mes_codgr_stat); Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_empleado",
+      "perfil": "mando",
+      "orden": 1,
+      "sql": "SELECT zparte.`PERNR` AS pernr, userpayroll.`NAME` AS nombre, userpayroll.`SURNAME` AS apellidos, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS horas_extra \nFROM zparte LEFT OUTER JOIN userpayroll ON zparte.`PERNR` = userpayroll.`NUMPER` \nWHERE (zparte.`PERNR` = '00000105' OR zparte.`CODGR` IN (3)) AND zparte.`EJERC` = '2025' AND zparte.`MES` IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') GROUP BY zparte.`PERNR`, userpayroll.`NAME`, userpayroll.`SURNAME` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`PERNR` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 68.48,
+          "min_ms": 67.21,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 18.24,
+          "min_ms": 17.81,
+          "explain": {
+            "tipo": "index_merge",
+            "indice": "zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr",
+            "filas": "3776",
+            "extra": "Using sort_union(zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr); Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 18.55,
+          "min_ms": 18.18,
+          "explain": {
+            "tipo": "index_merge",
+            "indice": "zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr",
+            "filas": "3776",
+            "extra": "Using sort_union(zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr); Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_empleado",
+      "perfil": "mando",
+      "orden": 2,
+      "sql": "SELECT DISTINCT zparte.`DPTO` AS `zparte_DPTO` \nFROM zparte \nWHERE (zparte.`PERNR` = '00000105' OR zparte.`CODGR` IN (3)) AND zparte.`EJERC` = '2025' AND zparte.`MES` IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') AND zparte.`DPTO` IS NOT NULL ORDER BY zparte.`DPTO` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 42.63,
+          "min_ms": 40.63,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 9.14,
+          "min_ms": 8.86,
+          "explain": {
+            "tipo": "index_merge",
+            "indice": "zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr",
+            "filas": "3776",
+            "extra": "Using sort_union(zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr); Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 9.82,
+          "min_ms": 8.97,
+          "explain": {
+            "tipo": "index_merge",
+            "indice": "zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr",
+            "filas": "3776",
+            "extra": "Using sort_union(zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr); Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "ranking_combo",
+      "perfil": "mando",
+      "orden": 1,
+      "sql": "SELECT zparte.`PERNR` AS pernr, userpayroll.`NAME` AS nombre, userpayroll.`SURNAME` AS apellidos, coalesce(sum(zparte.`DLCOP` + zparte.`DFCOP` + zparte.`NLCOP` + zparte.`NFCOP`), 0) AS combo_programadas, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO` + zparte.`DLF` + zparte.`DFF` + zparte.`NLF` + zparte.`NFF` + zparte.`DLCOP` + zparte.`DFCOP` + zparte.`NLCOP` + zparte.`NFCOP`), 0) AS total_he, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS he_compensables, coalesce(sum(zparte.`DL` * 1.6e0 + zparte.`DF` * 2.0e0 + zparte.`NL` * 2.0e0 + zparte.`NF` * 2.5e0), 0) AS he_compensables_convertidas \nFROM zparte LEFT OUTER JOIN userpayroll ON zparte.`PERNR` = userpayroll.`NUMPER` \nWHERE (zparte.`PERNR` = '00000105' OR zparte.`CODGR` IN (3)) AND zparte.`EJERC` = '2025' AND zparte.`MES` IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') GROUP BY zparte.`PERNR`, userpayroll.`NAME`, userpayroll.`SURNAME` ORDER BY sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO` + zparte.`DLF` + zparte.`DFF` + zparte.`NLF` + zparte.`NFF` + zparte.`DLCOP` + zparte.`DFCOP` + zparte.`NLCOP` + zparte.`NFCOP`) DESC, zparte.`PERNR` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 88.17,
+          "min_ms": 83.98,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 36.66,
+          "min_ms": 20.18,
+          "explain": {
+            "tipo": "index_merge",
+            "indice": "zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr",
+            "filas": "3776",
+            "extra": "Using sort_union(zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr); Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 20.92,
+          "min_ms": 20.51,
+          "explain": {
+            "tipo": "index_merge",
+            "indice": "zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr",
+            "filas": "3776",
+            "extra": "Using sort_union(zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr); Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "ranking_combo",
+      "perfil": "mando",
+      "orden": 2,
+      "sql": "SELECT DISTINCT zparte.`DPTO` AS `zparte_DPTO` \nFROM zparte \nWHERE (zparte.`PERNR` = '00000105' OR zparte.`CODGR` IN (3)) AND zparte.`EJERC` = '2025' AND zparte.`MES` IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') AND zparte.`DPTO` IS NOT NULL ORDER BY zparte.`DPTO` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 47.99,
+          "min_ms": 45.24,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 15.63,
+          "min_ms": 12.79,
+          "explain": {
+            "tipo": "index_merge",
+            "indice": "zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr",
+            "filas": "3776",
+            "extra": "Using sort_union(zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr); Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 9.34,
+          "min_ms": 8.84,
+          "explain": {
+            "tipo": "index_merge",
+            "indice": "zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr",
+            "filas": "3776",
+            "extra": "Using sort_union(zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_codgr); Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "sp_resumen",
+      "perfil": "mando",
+      "orden": 1,
+      "sql": "SELECT userpayroll.`NAME` AS nombre, userpayroll.`SURNAME` AS apellidos, zparte.`PERNR` AS id, zparte.`DPTO` AS departamento, count(*) AS sp \nFROM zparte LEFT OUTER JOIN userpayroll ON zparte.`PERNR` = userpayroll.`NUMPER` \nWHERE (zparte.`PERNR` = '00000105' OR zparte.`CODGR` IN (3)) AND zparte.`PADAT` BETWEEN '2025-10-03' AND '2026-10-03' AND zparte.`SP` IN ('t', 'X', '1', 'S') GROUP BY zparte.`PERNR`, userpayroll.`NAME`, userpayroll.`SURNAME`, zparte.`DPTO` ORDER BY count(*) DESC, zparte.`PERNR` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 58.74,
+          "min_ms": 46.93,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 57.03,
+          "min_ms": 49.92,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "97505",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 3.49,
+          "min_ms": 3.36,
+          "explain": {
+            "tipo": "range",
+            "indice": "idx_zparte_sp_padat",
+            "filas": "860",
+            "extra": "Using index condition; Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "sp_resumen",
+      "perfil": "mando",
+      "orden": 2,
+      "sql": "SELECT zparte.`DPTO` AS departamento, count(*) AS sp \nFROM zparte \nWHERE (zparte.`PERNR` = '00000105' OR zparte.`CODGR` IN (3)) AND zparte.`PADAT` BETWEEN '2025-10-03' AND '2026-10-03' AND zparte.`SP` IN ('t', 'X', '1', 'S') GROUP BY zparte.`DPTO` ORDER BY count(*) DESC, zparte.`DPTO` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 53.11,
+          "min_ms": 50.99,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 47.98,
+          "min_ms": 44.43,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "97505",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 2.94,
+          "min_ms": 2.57,
+          "explain": {
+            "tipo": "range",
+            "indice": "idx_zparte_sp_padat",
+            "filas": "860",
+            "extra": "Using index condition; Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "sp_resumen",
+      "perfil": "mando",
+      "orden": 3,
+      "sql": "SELECT userpayroll.`NAME` AS nombre, userpayroll.`SURNAME` AS apellidos, zparte.`PERNR` AS id, zparte.`DPTO` AS departamento, count(*) AS sp \nFROM zparte LEFT OUTER JOIN userpayroll ON zparte.`PERNR` = userpayroll.`NUMPER` \nWHERE (zparte.`PERNR` = '00000105' OR zparte.`CODGR` IN (3)) AND zparte.`PADAT` BETWEEN '2024-10-03' AND '2026-10-03' AND zparte.`SP` IN ('t', 'X', '1', 'S') GROUP BY zparte.`PERNR`, userpayroll.`NAME`, userpayroll.`SURNAME`, zparte.`DPTO` ORDER BY count(*) DESC, zparte.`PERNR` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 93.25,
+          "min_ms": 70.58,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 58.74,
+          "min_ms": 53.44,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "97505",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 5.29,
+          "min_ms": 5.1,
+          "explain": {
+            "tipo": "range",
+            "indice": "idx_zparte_sp_padat",
+            "filas": "1798",
+            "extra": "Using index condition; Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "sp_resumen",
+      "perfil": "mando",
+      "orden": 4,
+      "sql": "SELECT zparte.`DPTO` AS departamento, count(*) AS sp \nFROM zparte \nWHERE (zparte.`PERNR` = '00000105' OR zparte.`CODGR` IN (3)) AND zparte.`PADAT` BETWEEN '2024-10-03' AND '2026-10-03' AND zparte.`SP` IN ('t', 'X', '1', 'S') GROUP BY zparte.`DPTO` ORDER BY count(*) DESC, zparte.`DPTO` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 52.67,
+          "min_ms": 48.2,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 54.87,
+          "min_ms": 51.43,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "97505",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 4.64,
+          "min_ms": 4.27,
+          "explain": {
+            "tipo": "range",
+            "indice": "idx_zparte_sp_padat",
+            "filas": "1798",
+            "extra": "Using index condition; Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "ejercicios",
+      "perfil": "mando",
+      "orden": 1,
+      "sql": "SELECT DISTINCT zparte.`EJERC` AS `zparte_EJERC` \nFROM zparte \nWHERE (zparte.`PERNR` = '00000105' OR zparte.`CODGR` IN (3)) AND zparte.`EJERC` IS NOT NULL",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 54.23,
+          "min_ms": 48.32,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 27.76,
+          "min_ms": 25.79,
+          "explain": {
+            "tipo": "range",
+            "indice": "idx_zparte_ejerc_codgr",
+            "filas": "97505",
+            "extra": "Using where; Using index"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 21.92,
+          "min_ms": 21.54,
+          "explain": {
+            "tipo": "range",
+            "indice": "idx_zparte_ejerc_codgr",
+            "filas": "94747",
+            "extra": "Using where; Using index"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo",
+      "perfil": "empleado",
+      "orden": 1,
+      "sql": "SELECT zparte.`MES` AS mes, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte \nWHERE zparte.`PERNR` = '00000012' AND zparte.`EJERC` = '2025' AND zparte.`MES` IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') GROUP BY zparte.`MES`",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 69.87,
+          "min_ms": 60.36,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 2.21,
+          "min_ms": 1.92,
+          "explain": {
+            "tipo": "range",
+            "indice": "zparte_PERNR_MES_EJERC_IDX",
+            "filas": "150",
+            "extra": "Using index condition"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 1.92,
+          "min_ms": 1.61,
+          "explain": {
+            "tipo": "range",
+            "indice": "zparte_PERNR_MES_EJERC_IDX",
+            "filas": "150",
+            "extra": "Using index condition"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo",
+      "perfil": "empleado",
+      "orden": 2,
+      "sql": "SELECT zparte.`DPTO` AS departamento, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte \nWHERE zparte.`PERNR` = '00000012' AND zparte.`EJERC` = '2025' AND zparte.`MES` IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') GROUP BY zparte.`DPTO` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`DPTO` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 68.0,
+          "min_ms": 63.13,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 2.15,
+          "min_ms": 1.85,
+          "explain": {
+            "tipo": "range",
+            "indice": "zparte_PERNR_MES_EJERC_IDX",
+            "filas": "150",
+            "extra": "Using index condition; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 1.96,
+          "min_ms": 1.62,
+          "explain": {
+            "tipo": "range",
+            "indice": "zparte_PERNR_MES_EJERC_IDX",
+            "filas": "150",
+            "extra": "Using index condition; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo",
+      "perfil": "empleado",
+      "orden": 3,
+      "sql": "SELECT userpayroll.`NAME` AS nombre, userpayroll.`SURNAME` AS apellidos, zparte.`PERNR` AS id, zparte.`DPTO` AS departamento, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte LEFT OUTER JOIN userpayroll ON zparte.`PERNR` = userpayroll.`NUMPER` \nWHERE zparte.`PERNR` = '00000012' AND zparte.`EJERC` = '2025' AND zparte.`MES` IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') GROUP BY zparte.`PERNR`, userpayroll.`NAME`, userpayroll.`SURNAME`, zparte.`DPTO` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`PERNR` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 72.38,
+          "min_ms": 62.98,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 2.44,
+          "min_ms": 2.2,
+          "explain": {
+            "tipo": "range",
+            "indice": "zparte_PERNR_MES_EJERC_IDX",
+            "filas": "150",
+            "extra": "Using index condition; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 2.25,
+          "min_ms": 1.98,
+          "explain": {
+            "tipo": "range",
+            "indice": "zparte_PERNR_MES_EJERC_IDX",
+            "filas": "150",
+            "extra": "Using index condition; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo_natural",
+      "perfil": "empleado",
+      "orden": 1,
+      "sql": "SELECT month(zparte.`PADAT`) AS mes, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte \nWHERE zparte.`PERNR` = '00000012' AND zparte.`PADAT` BETWEEN '2025-01-01' AND '2025-12-31' GROUP BY month(zparte.`PADAT`)",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 58.53,
+          "min_ms": 53.9,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 1.59,
+          "min_ms": 1.44,
+          "explain": {
+            "tipo": "range",
+            "indice": "idx_unico_persona_dia",
+            "filas": "156",
+            "extra": "Using index condition; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 1.56,
+          "min_ms": 1.3,
+          "explain": {
+            "tipo": "range",
+            "indice": "idx_unico_persona_dia",
+            "filas": "156",
+            "extra": "Using index condition; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo_natural",
+      "perfil": "empleado",
+      "orden": 2,
+      "sql": "SELECT zparte.`DPTO` AS departamento, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte \nWHERE zparte.`PERNR` = '00000012' AND zparte.`PADAT` BETWEEN '2025-01-01' AND '2025-12-31' GROUP BY zparte.`DPTO` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`DPTO` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 63.54,
+          "min_ms": 60.29,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 1.54,
+          "min_ms": 1.39,
+          "explain": {
+            "tipo": "range",
+            "indice": "idx_unico_persona_dia",
+            "filas": "156",
+            "extra": "Using index condition; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 1.61,
+          "min_ms": 1.37,
+          "explain": {
+            "tipo": "range",
+            "indice": "idx_unico_persona_dia",
+            "filas": "156",
+            "extra": "Using index condition; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo_natural",
+      "perfil": "empleado",
+      "orden": 3,
+      "sql": "SELECT userpayroll.`NAME` AS nombre, userpayroll.`SURNAME` AS apellidos, zparte.`PERNR` AS id, zparte.`DPTO` AS departamento, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte LEFT OUTER JOIN userpayroll ON zparte.`PERNR` = userpayroll.`NUMPER` \nWHERE zparte.`PERNR` = '00000012' AND zparte.`PADAT` BETWEEN '2025-01-01' AND '2025-12-31' GROUP BY zparte.`PERNR`, userpayroll.`NAME`, userpayroll.`SURNAME`, zparte.`DPTO` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`PERNR` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 54.66,
+          "min_ms": 52.88,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 2.0,
+          "min_ms": 1.78,
+          "explain": {
+            "tipo": "range",
+            "indice": "idx_unico_persona_dia",
+            "filas": "156",
+            "extra": "Using index condition; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 1.78,
+          "min_ms": 1.6,
+          "explain": {
+            "tipo": "range",
+            "indice": "idx_unico_persona_dia",
+            "filas": "156",
+            "extra": "Using index condition; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo_junio",
+      "perfil": "empleado",
+      "orden": 1,
+      "sql": "SELECT zparte.`MES` AS mes, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte \nWHERE zparte.`PERNR` = '00000012' AND zparte.`EJERC` = '2025' AND zparte.`MES` = '06' GROUP BY zparte.`MES`",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 55.51,
+          "min_ms": 52.88,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 1.19,
+          "min_ms": 1.15,
+          "explain": {
+            "tipo": "ref",
+            "indice": "zparte_PERNR_MES_EJERC_IDX",
+            "filas": "11",
+            "extra": "Using index condition"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 0.95,
+          "min_ms": 0.83,
+          "explain": {
+            "tipo": "ref",
+            "indice": "zparte_PERNR_MES_EJERC_IDX",
+            "filas": "11",
+            "extra": "Using index condition"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo_junio",
+      "perfil": "empleado",
+      "orden": 2,
+      "sql": "SELECT zparte.`DPTO` AS departamento, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte \nWHERE zparte.`PERNR` = '00000012' AND zparte.`EJERC` = '2025' AND zparte.`MES` = '06' GROUP BY zparte.`DPTO` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`DPTO` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 67.86,
+          "min_ms": 63.49,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 1.32,
+          "min_ms": 1.13,
+          "explain": {
+            "tipo": "ref",
+            "indice": "zparte_PERNR_MES_EJERC_IDX",
+            "filas": "11",
+            "extra": "Using index condition; Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 1.15,
+          "min_ms": 1.0,
+          "explain": {
+            "tipo": "ref",
+            "indice": "zparte_PERNR_MES_EJERC_IDX",
+            "filas": "11",
+            "extra": "Using index condition; Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_periodo_junio",
+      "perfil": "empleado",
+      "orden": 3,
+      "sql": "SELECT userpayroll.`NAME` AS nombre, userpayroll.`SURNAME` AS apellidos, zparte.`PERNR` AS id, zparte.`DPTO` AS departamento, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total \nFROM zparte LEFT OUTER JOIN userpayroll ON zparte.`PERNR` = userpayroll.`NUMPER` \nWHERE zparte.`PERNR` = '00000012' AND zparte.`EJERC` = '2025' AND zparte.`MES` = '06' GROUP BY zparte.`PERNR`, userpayroll.`NAME`, userpayroll.`SURNAME`, zparte.`DPTO` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`PERNR` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 68.83,
+          "min_ms": 62.75,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 2.14,
+          "min_ms": 1.89,
+          "explain": {
+            "tipo": "ref",
+            "indice": "zparte_PERNR_MES_EJERC_IDX",
+            "filas": "11",
+            "extra": "Using index condition; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 1.62,
+          "min_ms": 1.23,
+          "explain": {
+            "tipo": "ref",
+            "indice": "zparte_PERNR_MES_EJERC_IDX",
+            "filas": "11",
+            "extra": "Using index condition; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_empleado",
+      "perfil": "empleado",
+      "orden": 1,
+      "sql": "SELECT zparte.`PERNR` AS pernr, userpayroll.`NAME` AS nombre, userpayroll.`SURNAME` AS apellidos, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS horas_extra \nFROM zparte LEFT OUTER JOIN userpayroll ON zparte.`PERNR` = userpayroll.`NUMPER` \nWHERE zparte.`PERNR` = '00000012' AND zparte.`EJERC` = '2025' AND zparte.`MES` IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') GROUP BY zparte.`PERNR`, userpayroll.`NAME`, userpayroll.`SURNAME` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`PERNR` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 56.88,
+          "min_ms": 56.14,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 2.74,
+          "min_ms": 2.56,
+          "explain": {
+            "tipo": "range",
+            "indice": "zparte_PERNR_MES_EJERC_IDX",
+            "filas": "150",
+            "extra": "Using index condition; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 2.73,
+          "min_ms": 2.22,
+          "explain": {
+            "tipo": "range",
+            "indice": "zparte_PERNR_MES_EJERC_IDX",
+            "filas": "150",
+            "extra": "Using index condition; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "he_por_empleado",
+      "perfil": "empleado",
+      "orden": 2,
+      "sql": "SELECT DISTINCT zparte.`DPTO` AS `zparte_DPTO` \nFROM zparte \nWHERE zparte.`PERNR` = '00000012' AND zparte.`EJERC` = '2025' AND zparte.`MES` IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') AND zparte.`DPTO` IS NOT NULL ORDER BY zparte.`DPTO` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 40.17,
+          "min_ms": 38.73,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 2.35,
+          "min_ms": 2.13,
+          "explain": {
+            "tipo": "range",
+            "indice": "zparte_PERNR_MES_EJERC_IDX",
+            "filas": "150",
+            "extra": "Using index condition; Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 1.79,
+          "min_ms": 1.59,
+          "explain": {
+            "tipo": "range",
+            "indice": "zparte_PERNR_MES_EJERC_IDX",
+            "filas": "150",
+            "extra": "Using index condition; Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "ranking_combo",
+      "perfil": "empleado",
+      "orden": 1,
+      "sql": "SELECT zparte.`PERNR` AS pernr, userpayroll.`NAME` AS nombre, userpayroll.`SURNAME` AS apellidos, coalesce(sum(zparte.`DLCOP` + zparte.`DFCOP` + zparte.`NLCOP` + zparte.`NFCOP`), 0) AS combo_programadas, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO` + zparte.`DLF` + zparte.`DFF` + zparte.`NLF` + zparte.`NFF` + zparte.`DLCOP` + zparte.`DFCOP` + zparte.`NLCOP` + zparte.`NFCOP`), 0) AS total_he, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS he_compensables, coalesce(sum(zparte.`DL` * 1.6e0 + zparte.`DF` * 2.0e0 + zparte.`NL` * 2.0e0 + zparte.`NF` * 2.5e0), 0) AS he_compensables_convertidas \nFROM zparte LEFT OUTER JOIN userpayroll ON zparte.`PERNR` = userpayroll.`NUMPER` \nWHERE zparte.`PERNR` = '00000012' AND zparte.`EJERC` = '2025' AND zparte.`MES` IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') GROUP BY zparte.`PERNR`, userpayroll.`NAME`, userpayroll.`SURNAME` ORDER BY sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO` + zparte.`DLF` + zparte.`DFF` + zparte.`NLF` + zparte.`NFF` + zparte.`DLCOP` + zparte.`DFCOP` + zparte.`NLCOP` + zparte.`NFCOP`) DESC, zparte.`PERNR` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 62.84,
+          "min_ms": 60.67,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 3.08,
+          "min_ms": 2.77,
+          "explain": {
+            "tipo": "range",
+            "indice": "zparte_PERNR_MES_EJERC_IDX",
+            "filas": "150",
+            "extra": "Using index condition; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 2.98,
+          "min_ms": 2.55,
+          "explain": {
+            "tipo": "range",
+            "indice": "zparte_PERNR_MES_EJERC_IDX",
+            "filas": "150",
+            "extra": "Using index condition; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "ranking_combo",
+      "perfil": "empleado",
+      "orden": 2,
+      "sql": "SELECT DISTINCT zparte.`DPTO` AS `zparte_DPTO` \nFROM zparte \nWHERE zparte.`PERNR` = '00000012' AND zparte.`EJERC` = '2025' AND zparte.`MES` IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') AND zparte.`DPTO` IS NOT NULL ORDER BY zparte.`DPTO` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 38.47,
+          "min_ms": 36.96,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 2.13,
+          "min_ms": 1.78,
+          "explain": {
+            "tipo": "range",
+            "indice": "zparte_PERNR_MES_EJERC_IDX",
+            "filas": "150",
+            "extra": "Using index condition; Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 1.34,
+          "min_ms": 1.27,
+          "explain": {
+            "tipo": "range",
+            "indice": "zparte_PERNR_MES_EJERC_IDX",
+            "filas": "150",
+            "extra": "Using index condition; Using where; Using temporary; Using filesort"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "sp_resumen",
+      "perfil": "empleado",
+      "orden": 1,
+      "sql": "SELECT userpayroll.`NAME` AS nombre, userpayroll.`SURNAME` AS apellidos, zparte.`PERNR` AS id, zparte.`DPTO` AS departamento, count(*) AS sp \nFROM zparte LEFT OUTER JOIN userpayroll ON zparte.`PERNR` = userpayroll.`NUMPER` \nWHERE zparte.`PERNR` = '00000012' AND zparte.`PADAT` BETWEEN '2025-10-03' AND '2026-10-03' AND zparte.`SP` IN ('t', 'X', '1', 'S') GROUP BY zparte.`PERNR`, userpayroll.`NAME`, userpayroll.`SURNAME`, zparte.`DPTO` ORDER BY count(*) DESC, zparte.`PERNR` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 36.79,
+          "min_ms": 35.44,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 1.38,
+          "min_ms": 1.11,
+          "explain": {
+            "tipo": "range",
+            "indice": "idx_unico_persona_dia",
+            "filas": "162",
+            "extra": "Using index condition; Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 1.53,
+          "min_ms": 1.44,
+          "explain": {
+            "tipo": "ref|filter",
+            "indice": "idx_Zparte_pernr_group|idx_zparte_sp_padat",
+            "filas": "432 (1%)",
+            "extra": "Using index condition; Using where; Using temporary; Using filesort; Using rowid filter"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "sp_resumen",
+      "perfil": "empleado",
+      "orden": 2,
+      "sql": "SELECT zparte.`DPTO` AS departamento, count(*) AS sp \nFROM zparte \nWHERE zparte.`PERNR` = '00000012' AND zparte.`PADAT` BETWEEN '2025-10-03' AND '2026-10-03' AND zparte.`SP` IN ('t', 'X', '1', 'S') GROUP BY zparte.`DPTO` ORDER BY count(*) DESC, zparte.`DPTO` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 38.03,
+          "min_ms": 36.3,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 0.98,
+          "min_ms": 0.9,
+          "explain": {
+            "tipo": "range",
+            "indice": "idx_unico_persona_dia",
+            "filas": "162",
+            "extra": "Using index condition; Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 1.48,
+          "min_ms": 1.29,
+          "explain": {
+            "tipo": "ref|filter",
+            "indice": "idx_Zparte_pernr_group|idx_zparte_sp_padat",
+            "filas": "432 (1%)",
+            "extra": "Using index condition; Using where; Using temporary; Using filesort; Using rowid filter"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "sp_resumen",
+      "perfil": "empleado",
+      "orden": 3,
+      "sql": "SELECT userpayroll.`NAME` AS nombre, userpayroll.`SURNAME` AS apellidos, zparte.`PERNR` AS id, zparte.`DPTO` AS departamento, count(*) AS sp \nFROM zparte LEFT OUTER JOIN userpayroll ON zparte.`PERNR` = userpayroll.`NUMPER` \nWHERE zparte.`PERNR` = '00000012' AND zparte.`PADAT` BETWEEN '2024-10-03' AND '2026-10-03' AND zparte.`SP` IN ('t', 'X', '1', 'S') GROUP BY zparte.`PERNR`, userpayroll.`NAME`, userpayroll.`SURNAME`, zparte.`DPTO` ORDER BY count(*) DESC, zparte.`PERNR` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 38.14,
+          "min_ms": 37.17,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 1.52,
+          "min_ms": 1.23,
+          "explain": {
+            "tipo": "range",
+            "indice": "idx_unico_persona_dia",
+            "filas": "300",
+            "extra": "Using index condition; Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 2.17,
+          "min_ms": 1.98,
+          "explain": {
+            "tipo": "ref|filter",
+            "indice": "idx_Zparte_pernr_group|idx_zparte_sp_padat",
+            "filas": "432 (2%)",
+            "extra": "Using index condition; Using where; Using temporary; Using filesort; Using rowid filter"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "sp_resumen",
+      "perfil": "empleado",
+      "orden": 4,
+      "sql": "SELECT zparte.`DPTO` AS departamento, count(*) AS sp \nFROM zparte \nWHERE zparte.`PERNR` = '00000012' AND zparte.`PADAT` BETWEEN '2024-10-03' AND '2026-10-03' AND zparte.`SP` IN ('t', 'X', '1', 'S') GROUP BY zparte.`DPTO` ORDER BY count(*) DESC, zparte.`DPTO` ASC",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 41.08,
+          "min_ms": 39.52,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary; Using filesort"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 1.5,
+          "min_ms": 1.22,
+          "explain": {
+            "tipo": "range",
+            "indice": "idx_unico_persona_dia",
+            "filas": "300",
+            "extra": "Using index condition; Using where; Using temporary; Using filesort"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 2.37,
+          "min_ms": 1.96,
+          "explain": {
+            "tipo": "ref|filter",
+            "indice": "idx_Zparte_pernr_group|idx_zparte_sp_padat",
+            "filas": "432 (2%)",
+            "extra": "Using index condition; Using where; Using temporary; Using filesort; Using rowid filter"
+          }
+        }
+      }
+    },
+    {
+      "consulta": "ejercicios",
+      "perfil": "empleado",
+      "orden": 1,
+      "sql": "SELECT DISTINCT zparte.`EJERC` AS `zparte_EJERC` \nFROM zparte \nWHERE zparte.`PERNR` = '00000012' AND zparte.`EJERC` IS NOT NULL",
+      "resultados": {
+        "solo_pk": {
+          "mediana_ms": 37.52,
+          "min_ms": 36.53,
+          "explain": {
+            "tipo": "ALL",
+            "indice": null,
+            "filas": "99931",
+            "extra": "Using where; Using temporary"
+          }
+        },
+        "produccion": {
+          "mediana_ms": 1.19,
+          "min_ms": 1.04,
+          "explain": {
+            "tipo": "ref",
+            "indice": "zparte_PERNR_MES_EJERC_IDX",
+            "filas": "432",
+            "extra": "Using where; Using index; Using temporary"
+          }
+        },
+        "propuestos": {
+          "mediana_ms": 1.06,
+          "min_ms": 0.94,
+          "explain": {
+            "tipo": "ref",
+            "indice": "zparte_PERNR_MES_EJERC_IDX",
+            "filas": "432",
+            "extra": "Using where; Using index; Using temporary"
+          }
+        }
+      }
+    }
+  ]
+}

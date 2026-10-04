@@ -10,7 +10,7 @@ Los tests reutilizan cargar_datos_prueba() sobre la BD epartes_test.
 from datetime import date
 
 from extensions import db
-from models import AreasPayroll, DepartmentPayroll, GruposPayroll, UserPayroll, ZgrRoles, ZParte
+from models import AreasPayroll, DepartmentPayroll, EppartStatus, GruposPayroll, UserPayroll, ZgrRoles, ZParte
 from services.auth_service import AuthService
 
 PASSWORD_PRUEBA = 'Tirme2026!'
@@ -46,8 +46,24 @@ def _crear_si_no_existe(session, modelo, clave, **campos):
         session.add(modelo(**campos))
 
 
+# Estados de eppartstatus (los mismos que en producción)
+ESTADOS = [
+    ('A', 'Creado por el encargado', '#FF8040'),
+    ('B', 'Creado por el empleado', '#FF0000'),
+    ('C', 'Visto bueno por el jefe de área', '#00FF00'),
+    ('D', 'Modificado y visto bueno por el jefe de área', '#FF0080'),
+    ('E', 'Firmado por el jefe de departamento', '#299999'),
+    ('F', 'Modificado y firmado por el jefe de departamento.', '#800080'),
+    ('G', 'Traspasado a nómina por RRHH', '#00FFFF'),
+    ('H', 'Modificado por RRHH', '#666699'),
+    ('I', 'Modificado por RRHH y traspasado a nómina por RRHH', '#0000FF'),
+]
+
+
 def cargar_datos_prueba(session):
     """Inserta o actualiza los datos de prueba en la BD de la sesión dada."""
+    for estado, descripcion, color in ESTADOS:
+        _crear_si_no_existe(session, EppartStatus, estado, STATUS=estado, DESCRIPTION=descripcion, COLOR=color)
     for code, externo, nombre in GRUPOS:
         _crear_si_no_existe(session, GruposPayroll, code, CODE=code, EXTERNALCODE=externo, NAME=nombre)
     for code, nombre in AREAS:

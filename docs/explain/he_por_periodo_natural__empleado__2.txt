@@ -1,0 +1,118 @@
+# HE por periodos, año natural 2025 · perfil empleado · sentencia 2
+
+SELECT zparte.`DPTO` AS departamento, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total 
+FROM zparte 
+WHERE zparte.`PERNR` = '00000012' AND zparte.`PADAT` BETWEEN '2025-01-01' AND '2025-12-31' GROUP BY zparte.`DPTO` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`DPTO` ASC
+
+## 1. Solo clave primaria — mediana 63.54 ms, mínimo 60.29 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=ALL | possible_keys=None | key=None | key_len=None | ref=None | rows=99931 | Extra=Using where; Using temporary; Using filesort
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 18.384465,
+    "filesort": {
+      "sort_key": "coalesce(sum(zparte.DL + zparte.DF + zparte.NL + zparte.NF + zparte.DLC + zparte.DFC + zparte.NLC + zparte.NFC + zparte.DLB + zparte.DFB + zparte.NLB + zparte.NFB + zparte.DLBN + zparte.DFBN + zparte.NLBN + zparte.NFBN + zparte.DLCO + zparte.DFCO + zparte.NLCO + zparte.NFCO),0) desc, zparte.DPTO",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "ALL",
+              "loops": 1,
+              "rows": 99931,
+              "cost": 18.384465,
+              "filtered": 100,
+              "attached_condition": "zparte.PERNR = '00000012' and zparte.PADAT between <cache>('2025-01-01') and <cache>('2025-12-31')"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
+## 2. Índices de producción — mediana 1.54 ms, mínimo 1.39 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=range | possible_keys=idx_unico_persona_dia,idx_mes_padat,idx_Zparte_pernr_group,zparte_PERNR_IDX,zparte_PERNR_MES_EJERC_IDX | key=idx_unico_persona_dia | key_len=29 | ref=None | rows=156 | Extra=Using index condition; Using temporary; Using filesort
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 0.28520888,
+    "filesort": {
+      "sort_key": "coalesce(sum(zparte.DL + zparte.DF + zparte.NL + zparte.NF + zparte.DLC + zparte.DFC + zparte.NLC + zparte.NFC + zparte.DLB + zparte.DFB + zparte.NLB + zparte.NFB + zparte.DLBN + zparte.DFBN + zparte.NLBN + zparte.NFBN + zparte.DLCO + zparte.DFCO + zparte.NLCO + zparte.NFCO),0) desc, zparte.DPTO",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "range",
+              "possible_keys": [
+                "idx_unico_persona_dia",
+                "idx_mes_padat",
+                "idx_Zparte_pernr_group",
+                "zparte_PERNR_IDX",
+                "zparte_PERNR_MES_EJERC_IDX"
+              ],
+              "key": "idx_unico_persona_dia",
+              "key_length": "29",
+              "used_key_parts": [
+                "PERNR",
+                "PADAT"
+              ],
+              "loops": 1,
+              "rows": 156,
+              "cost": 0.28520888,
+              "filtered": 100,
+              "index_condition": "zparte.PERNR = '00000012' and zparte.PADAT between '2025-01-01' and '2025-12-31'"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
+## 3. Producción + propuestos — mediana 1.61 ms, mínimo 1.37 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=range | possible_keys=idx_unico_persona_dia,idx_mes_padat,idx_Zparte_pernr_group,zparte_PERNR_IDX,zparte_PERNR_MES_EJERC_IDX | key=idx_unico_persona_dia | key_len=29 | ref=None | rows=156 | Extra=Using index condition; Using temporary; Using filesort
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 0.28520888,
+    "filesort": {
+      "sort_key": "coalesce(sum(zparte.DL + zparte.DF + zparte.NL + zparte.NF + zparte.DLC + zparte.DFC + zparte.NLC + zparte.NFC + zparte.DLB + zparte.DFB + zparte.NLB + zparte.NFB + zparte.DLBN + zparte.DFBN + zparte.NLBN + zparte.NFBN + zparte.DLCO + zparte.DFCO + zparte.NLCO + zparte.NFCO),0) desc, zparte.DPTO",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "range",
+              "possible_keys": [
+                "idx_unico_persona_dia",
+                "idx_mes_padat",
+                "idx_Zparte_pernr_group",
+                "zparte_PERNR_IDX",
+                "zparte_PERNR_MES_EJERC_IDX"
+              ],
+              "key": "idx_unico_persona_dia",
+              "key_length": "29",
+              "used_key_parts": [
+                "PERNR",
+                "PADAT"
+              ],
+              "loops": 1,
+              "rows": 156,
+              "cost": 0.28520888,
+              "filtered": 100,
+              "index_condition": "zparte.PERNR = '00000012' and zparte.PADAT between '2025-01-01' and '2025-12-31'"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

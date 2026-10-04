@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize, Subject, Subscription, takeUntil } from 'rxjs';
-import { HeEstado, HePeriodo, HeService, RankingComboFila, RankingComboResponse } from '../../services/he.service';
+import { elegirAnio, HeEstado, HePeriodo, HeService, RankingComboFila, RankingComboResponse } from '../../services/he.service';
 
 @Component({
   selector: 'app-ranking-combo',
@@ -17,7 +17,9 @@ export class RankingCombo implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
   private solicitud?: Subscription;
 
-  public anio = 2026;
+  // El año por defecto y los años del combo salen de /api/partes/ejercicios
+  public anio = new Date().getFullYear();
+  public anios: number[] = [this.anio];
   public mesDesde = 1;
   public mesHasta = 12;
   public anioNatural = false;
@@ -36,7 +38,21 @@ export class RankingCombo implements OnInit, OnDestroy {
 
   public ngOnInit() {
     this.cargarEstados();
-    this.cargar();
+    this.cargarEjercicios();
+  }
+
+  // Carga los años con datos y, después, la pantalla con el año por defecto
+  private cargarEjercicios() {
+    this.heService
+      .obtenerEjercicios()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (respuesta) => {
+          ({ anios: this.anios, anio: this.anio } = elegirAnio(respuesta));
+          this.cargar();
+        },
+        error: () => this.cargar(),
+      });
   }
 
   private cargarEstados() {

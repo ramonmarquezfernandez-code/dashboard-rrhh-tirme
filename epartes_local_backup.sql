@@ -29,7 +29,7 @@ CREATE TABLE `areaspayroll` (
   `SYNCRONIZED_A3` bit(1) DEFAULT b'0',
   `SYNCRONIZED_A3_DATE` date DEFAULT NULL,
   PRIMARY KEY (`CODE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -62,7 +62,7 @@ CREATE TABLE `departmentspayroll` (
   `SYNCRONIZED_A3` bit(1) DEFAULT b'0',
   `SYNCRONIZED_A3_DATE` date DEFAULT NULL,
   PRIMARY KEY (`CODE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -92,7 +92,7 @@ CREATE TABLE `eppartstatus` (
   `DESCRIPTION` varchar(100) NOT NULL,
   `COLOR` char(7) NOT NULL,
   PRIMARY KEY (`STATUS`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -131,7 +131,7 @@ CREATE TABLE `grupospayroll` (
   `SYNCRONIZED_A3` bit(1) DEFAULT b'0',
   `SYNCRONIZED_A3_DATE` date DEFAULT NULL,
   PRIMARY KEY (`CODE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -163,7 +163,7 @@ CREATE TABLE `tep_classificationpayroll` (
   `IS_SYNCHRONIZED` bit(1) DEFAULT b'0',
   `SYNCHRONIZED_DATE` date DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -213,7 +213,7 @@ CREATE TABLE `userpayroll` (
   KEY `user_DEPARTMENT_IDX` (`DEPARTMENT`),
   KEY `user_GRUPO_IDX` (`GRUPO`),
   KEY `userpayroll_NUMPER_IDX` (`NUMPER`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -248,7 +248,7 @@ CREATE TABLE `zgrroles` (
   KEY `ZGRROLES_GROUP_IDX` (`CODGR`),
   KEY `idx_Zgrroles_pernr` (`PERNR`),
   KEY `idx_Zgrroles_pernr_rol` (`PERNR`,`ROLNAME`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -396,9 +396,9 @@ CREATE TABLE `zparte` (
   KEY `idx_updat` (`UPDAT`),
   KEY `idx_zparte_pervbde` (`PERVBDE`),
   KEY `idx_zparte_perfide` (`PERFIDE`),
-  KEY `idx_zparte_ejerc_mes_codgr` (`EJERC`,`MES`,`CODGR`),
+  KEY `idx_zparte_ejerc_mes_codgr_stat` (`EJERC`,`MES`,`CODGR`,`STAT`),
   KEY `zparte_PERNR_MES_EJERC_IDX` (`PERNR`,`MES`,`EJERC`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -434,7 +434,7 @@ CREATE TABLE `zperiodos` (
   `FEFIRFIN` date DEFAULT NULL,
   `TRASPASO` varchar(1) DEFAULT NULL,
   PRIMARY KEY (`ID`,`EJERCICIO`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

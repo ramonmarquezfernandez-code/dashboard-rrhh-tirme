@@ -8,6 +8,7 @@ from flask_restx import Api
 
 # Namespaces de la API (todos documentados en Swagger)
 from routes.auth import auth_ns
+from routes.mis_partes import mis_partes_ns
 from routes.partes import partes_ns
 
 
@@ -20,6 +21,7 @@ def index():
             'endpoints': {
                 'auth': '/api/login',
                 'partes': '/api/partes',
+                'mis_partes': '/api/mis-partes',
             },
         }
     )
@@ -82,6 +84,8 @@ def create_app(config_object=Config):
     api.add_namespace(auth_ns, path='/api')
     # Partes de horas, horas extra, SP y plantilla
     api.add_namespace(partes_ns, path='/api/partes')
+    # Partes de trabajo del propio empleado (formulario de alta y "Mis partes")
+    api.add_namespace(mis_partes_ns, path='/api/mis-partes')
 
     return app
 

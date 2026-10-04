@@ -1,0 +1,105 @@
+# SP de los últimos 12 y 24 meses · perfil hr · sentencia 2
+
+SELECT zparte.`DPTO` AS departamento, count(*) AS sp 
+FROM zparte 
+WHERE zparte.`PADAT` BETWEEN '2025-10-03' AND '2026-10-03' AND zparte.`SP` IN ('t', 'X', '1', 'S') GROUP BY zparte.`DPTO` ORDER BY count(*) DESC, zparte.`DPTO` ASC
+
+## 1. Solo clave primaria — mediana 37.93 ms, mínimo 36.86 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=ALL | possible_keys=None | key=None | key_len=None | ref=None | rows=99931 | Extra=Using where; Using temporary; Using filesort
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 85.57824722,
+    "filesort": {
+      "sort_key": "count(0) desc, zparte.DPTO",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "ALL",
+              "loops": 1,
+              "rows": 99931,
+              "cost": 18.384465,
+              "filtered": 100,
+              "attached_condition": "zparte.PADAT between <cache>('2025-10-03') and <cache>('2026-10-03') and zparte.SP in ('t','X','1','S')"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
+## 2. Índices de producción — mediana 38.07 ms, mínimo 36.67 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=ALL | possible_keys=idx_mes_padat | key=None | key_len=None | ref=None | rows=97505 | Extra=Using where; Using temporary; Using filesort
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 66.50157009,
+    "filesort": {
+      "sort_key": "count(0) desc, zparte.DPTO",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "ALL",
+              "possible_keys": [
+                "idx_mes_padat"
+              ],
+              "loops": 1,
+              "rows": 97505,
+              "cost": 17.989027,
+              "filtered": 74.13363647,
+              "attached_condition": "zparte.PADAT between '2025-10-03' and '2026-10-03' and zparte.SP in ('t','X','1','S')"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
+## 3. Producción + propuestos — mediana 3.01 ms, mínimo 2.56 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=range | possible_keys=idx_mes_padat,idx_zparte_sp_padat | key=idx_zparte_sp_padat | key_len=7 | ref=None | rows=860 | Extra=Using index condition; Using temporary; Using filesort
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 2.125993087,
+    "filesort": {
+      "sort_key": "count(0) desc, zparte.DPTO",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "range",
+              "possible_keys": [
+                "idx_mes_padat",
+                "idx_zparte_sp_padat"
+              ],
+              "key": "idx_zparte_sp_padat",
+              "key_length": "7",
+              "used_key_parts": [
+                "SP",
+                "PADAT"
+              ],
+              "loops": 1,
+              "rows": 860,
+              "cost": 1.5636808,
+              "filtered": 100,
+              "index_condition": "zparte.PADAT between '2025-10-03' and '2026-10-03' and zparte.SP in ('t','X','1','S')"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

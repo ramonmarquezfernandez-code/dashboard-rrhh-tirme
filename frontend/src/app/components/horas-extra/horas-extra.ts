@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize, Subject, Subscription, takeUntil } from 'rxjs';
-import { HeDepartamento, HeEstado, HeMensual, HePeriodo, HeService, HeTrabajador } from '../../services/he.service';
+import { elegirAnio, HeDepartamento, HeEstado, HeMensual, HePeriodo, HeService, HeTrabajador } from '../../services/he.service';
 
 @Component({
   selector: 'app-horas-extra',
@@ -15,7 +15,9 @@ export class HorasExtra implements OnInit, OnDestroy {
   private readonly heService = inject(HeService);
   private readonly changeDetector = inject(ChangeDetectorRef);
 
-  public anio = 2026;
+  // El año por defecto y los años del combo salen de /api/partes/ejercicios
+  public anio = new Date().getFullYear();
+  public anios: number[] = [this.anio];
   public mesDesde = 1;
   public mesHasta = 12;
   public anioNatural = false;
@@ -49,7 +51,21 @@ export class HorasExtra implements OnInit, OnDestroy {
 
   public ngOnInit() {
     this.cargarEstados();
-    this.cargarResumen();
+    this.cargarEjercicios();
+  }
+
+  // Carga los años con datos y, después, la pantalla con el año por defecto
+  private cargarEjercicios() {
+    this.heService
+      .obtenerEjercicios()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (respuesta) => {
+          ({ anios: this.anios, anio: this.anio } = elegirAnio(respuesta));
+          this.cargarResumen();
+        },
+        error: () => this.cargarResumen(),
+      });
   }
 
   private cargarEstados() {

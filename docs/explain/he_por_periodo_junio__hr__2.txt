@@ -1,0 +1,130 @@
+# HE por periodos, periodo de nómina 06 · perfil hr · sentencia 2
+
+SELECT zparte.`DPTO` AS departamento, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total 
+FROM zparte 
+WHERE zparte.`EJERC` = '2025' AND zparte.`MES` = '06' GROUP BY zparte.`DPTO` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`DPTO` ASC
+
+## 1. Solo clave primaria — mediana 64.15 ms, mínimo 61.04 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=ALL | possible_keys=None | key=None | key_len=None | ref=None | rows=99931 | Extra=Using where; Using temporary; Using filesort
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 18.384465,
+    "filesort": {
+      "sort_key": "coalesce(sum(zparte.DL + zparte.DF + zparte.NL + zparte.NF + zparte.DLC + zparte.DFC + zparte.NLC + zparte.NFC + zparte.DLB + zparte.DFB + zparte.NLB + zparte.NFB + zparte.DLBN + zparte.DFBN + zparte.NLBN + zparte.NFBN + zparte.DLCO + zparte.DFCO + zparte.NLCO + zparte.NFCO),0) desc, zparte.DPTO",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "ALL",
+              "loops": 1,
+              "rows": 99931,
+              "cost": 18.384465,
+              "filtered": 100,
+              "attached_condition": "zparte.EJERC = '2025' and zparte.MES = '06'"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
+## 2. Índices de producción — mediana 11.16 ms, mínimo 10.73 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=ref | possible_keys=idx_ejer_month,idx_mes_ejer,idx_mes_mes_ejerc_padat,idx_zparte_ejerc,idx_zparte_ejerc_codgr,idx_zparte_ejerc_mes_codgr_stat | key=idx_ejer_month | key_len=24 | ref=const,const | rows=3281 | Extra=Using index condition; Using where; Using temporary; Using filesort
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 5.26851856,
+    "filesort": {
+      "sort_key": "coalesce(sum(zparte.DL + zparte.DF + zparte.NL + zparte.NF + zparte.DLC + zparte.DFC + zparte.NLC + zparte.NFC + zparte.DLB + zparte.DFB + zparte.NLB + zparte.NFB + zparte.DLBN + zparte.DFBN + zparte.NLBN + zparte.NFBN + zparte.DLCO + zparte.DFCO + zparte.NLCO + zparte.NFCO),0) desc, zparte.DPTO",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "ref",
+              "possible_keys": [
+                "idx_ejer_month",
+                "idx_mes_ejer",
+                "idx_mes_mes_ejerc_padat",
+                "idx_zparte_ejerc",
+                "idx_zparte_ejerc_codgr",
+                "idx_zparte_ejerc_mes_codgr_stat"
+              ],
+              "key": "idx_ejer_month",
+              "key_length": "24",
+              "used_key_parts": [
+                "EJERC",
+                "MES"
+              ],
+              "ref": [
+                "const",
+                "const"
+              ],
+              "loops": 1,
+              "rows": 3281,
+              "cost": 5.26851856,
+              "filtered": 100,
+              "index_condition": "zparte.EJERC = '2025' and zparte.MES = '06'",
+              "attached_condition": "zparte.EJERC <=> '2025' and zparte.MES <=> '06'"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
+## 3. Producción + propuestos — mediana 11.36 ms, mínimo 11.0 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=ref | possible_keys=idx_ejer_month,idx_mes_ejer,idx_mes_mes_ejerc_padat,idx_zparte_ejerc,idx_zparte_ejerc_codgr,idx_zparte_ejerc_mes_codgr_stat | key=idx_ejer_month | key_len=24 | ref=const,const | rows=3281 | Extra=Using index condition; Using where; Using temporary; Using filesort
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 5.26937336,
+    "filesort": {
+      "sort_key": "coalesce(sum(zparte.DL + zparte.DF + zparte.NL + zparte.NF + zparte.DLC + zparte.DFC + zparte.NLC + zparte.NFC + zparte.DLB + zparte.DFB + zparte.NLB + zparte.NFB + zparte.DLBN + zparte.DFBN + zparte.NLBN + zparte.NFBN + zparte.DLCO + zparte.DFCO + zparte.NLCO + zparte.NFCO),0) desc, zparte.DPTO",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "ref",
+              "possible_keys": [
+                "idx_ejer_month",
+                "idx_mes_ejer",
+                "idx_mes_mes_ejerc_padat",
+                "idx_zparte_ejerc",
+                "idx_zparte_ejerc_codgr",
+                "idx_zparte_ejerc_mes_codgr_stat"
+              ],
+              "key": "idx_ejer_month",
+              "key_length": "24",
+              "used_key_parts": [
+                "EJERC",
+                "MES"
+              ],
+              "ref": [
+                "const",
+                "const"
+              ],
+              "loops": 1,
+              "rows": 3281,
+              "cost": 5.26937336,
+              "filtered": 100,
+              "index_condition": "zparte.EJERC = '2025' and zparte.MES = '06'",
+              "attached_condition": "zparte.EJERC <=> '2025' and zparte.MES <=> '06'"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

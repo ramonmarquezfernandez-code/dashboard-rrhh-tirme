@@ -58,7 +58,9 @@ def datos_he(app_bd):
         for parte in PARTES:
             db.session.add(ZParte(TIPO='N', TURNO='M', EJERC=ANIO, **parte))
         db.session.commit()
-        yield
+    # Fuera del contexto durante los tests: cada petición usa su propia sesión
+    yield
+    with app_bd.app_context():
         db.session.execute(db.delete(ZParte).where(ZParte.EJERC == ANIO))
         db.session.execute(db.delete(ZPeriodos).where(ZPeriodos.EJERCICIO == ANIO))
         if estados_nuevos:

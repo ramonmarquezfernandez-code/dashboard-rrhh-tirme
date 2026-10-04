@@ -1,37 +1,40 @@
 <div class="p-6 space-y-6">
-  <!-- Tarjeta de estado de filtros actuales -->
+  <!-- Cabecera de la pantalla con sus filtros (grupo y área) -->
   <div
-    class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
+    class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-end justify-between gap-4"
   >
     <div>
       <h3 class="text-base font-bold text-slate-800">Resumen General de Personal</h3>
-      <p class="text-xs text-slate-500">
-        Mostrando métricas basadas en la selección de la cabecera global.
-      </p>
+      <p class="text-xs text-slate-500">Empleados activos visibles para tu perfil, por grupo, área y departamento.</p>
     </div>
 
-    <!-- Chips informativos con los valores actuales del Signal -->
-    <div class="flex flex-wrap items-center gap-2">
-      <span
-        class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200"
-      >
-        Año: <strong class="ml-1 text-slate-900">{{ filtrosService.filtros().anio }}</strong>
-      </span>
-      
-      <span
-        class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200"
-      >
-        Grupo:
-        <strong class="ml-1 text-slate-900">{{ filtrosService.filtros().grupo || 'Todos' }}</strong>
-      </span>
-      <span
-        class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200"
-      >
-        Estado:
-        <strong class="ml-1 text-slate-900">{{
-          filtrosService.filtros().estado || 'Todos'
-        }}</strong>
-      </span>
+    <div class="flex flex-wrap items-end gap-3">
+      <label class="grid gap-1 text-[11px] font-bold uppercase text-slate-500">
+        Grupo
+        <select
+          [ngModel]="grupo()"
+          (ngModelChange)="grupo.set($event); cargar()"
+          class="w-48 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium normal-case text-slate-800"
+        >
+          <option value="">Todos</option>
+          @for (item of grupos(); track item) {
+            <option [value]="item">{{ item }}</option>
+          }
+        </select>
+      </label>
+      <label class="grid gap-1 text-[11px] font-bold uppercase text-slate-500">
+        Área
+        <select
+          [ngModel]="area()"
+          (ngModelChange)="area.set($event); cargar()"
+          class="w-48 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium normal-case text-slate-800"
+        >
+          <option value="">Todas</option>
+          @for (item of areas(); track item) {
+            <option [value]="item">{{ item }}</option>
+          }
+        </select>
+      </label>
     </div>
   </div>
 

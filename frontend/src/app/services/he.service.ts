@@ -116,6 +116,42 @@ export interface PlantillaResumenResponse {
   por_grupo: PlantillaGrupoResumen[];
   por_area: PlantillaGrupoResumen[];
   por_departamento: PlantillaGrupoResumen[];
+  // Grupos y áreas visibles para el perfil (opciones de los combos de filtro)
+  grupos: string[];
+  areas: string[];
+}
+
+export interface Empleado {
+  pernr: string;
+  nombre: string | null;
+  apellidos: string | null;
+  email: string | null;
+  grupo: string | null;
+  area: string | null;
+  departamento: string | null;
+}
+
+export interface PersonalResponse {
+  empleados: Empleado[];
+  total: number;
+  grupos: string[];
+  areas: string[];
+}
+
+export interface EjerciciosResponse {
+  ejercicios: string[];
+  actual: string;
+}
+
+/** Años para el combo y año seleccionado por defecto a partir de /ejercicios. */
+export function elegirAnio(respuesta: EjerciciosResponse | null | undefined): { anios: number[]; anio: number } {
+  const anios = (respuesta?.ejercicios || []).map(Number).filter((anio) => Number.isInteger(anio) && anio > 0);
+  const actual = Number(respuesta?.actual);
+  if (!anios.length) {
+    const anioEnCurso = new Date().getFullYear();
+    return { anios: [anioEnCurso], anio: anioEnCurso };
+  }
+  return { anios, anio: anios.includes(actual) ? actual : anios[0] };
 }
 
 @Injectable({ providedIn: 'root' })
@@ -178,5 +214,16 @@ export class HeService {
       .set('grupo', filtros.grupo || '')
       .set('direccion', filtros.direccion || '');
     return this.http.get<PlantillaResumenResponse>(`${this.apiUrl}/plantilla-resumen`, { params });
+  }
+
+  obtenerPersonal(filtros: { grupo?: string; direccion?: string } = {}): Observable<PersonalResponse> {
+    const params = new HttpParams()
+      .set('grupo', filtros.grupo || '')
+      .set('direccion', filtros.direccion || '');
+    return this.http.get<PersonalResponse>(`${this.apiUrl}/personal`, { params });
+  }
+
+  obtenerEjercicios(): Observable<EjerciciosResponse> {
+    return this.http.get<EjerciciosResponse>(`${this.apiUrl}/ejercicios`);
   }
 }

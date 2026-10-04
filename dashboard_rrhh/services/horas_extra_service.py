@@ -3,6 +3,7 @@
 Columnas de horas: el prefijo indica el tramo (DL diurna laborable, DF diurna
 festiva, NL nocturna laborable, NF nocturna festiva) y el sufijo el tipo.
 """
+from datetime import date
 from functools import reduce
 
 from sqlalchemy import func
@@ -84,6 +85,23 @@ class HorasExtraService:
             .filter(*filtros).filter(ZParte.DPTO.isnot(None))
             .distinct().order_by(ZParte.DPTO.asc()).all()
         ]
+
+    # --- Ejercicios disponibles (combos de año) ------------------------------
+
+    def ejercicios(self, hoy=None):
+        """Ejercicios con partes visibles para el perfil más el año en curso, de más reciente a más antiguo.
+
+        'actual' es el año en curso si tiene partes; si no, el más reciente con partes.
+        """
+        anio_en_curso = str((hoy or date.today()).year)
+        con_datos = {
+            fila[0] for fila in db.session.query(ZParte.EJERC)
+            .filter(*FiltroPartesBuilder(self.filtro_perfil).construir(), ZParte.EJERC.isnot(None))
+            .distinct().all()
+        }
+        ejercicios = sorted(con_datos | {anio_en_curso}, reverse=True)
+        actual = anio_en_curso if anio_en_curso in con_datos or not con_datos else max(con_datos)
+        return {'ejercicios': ejercicios, 'actual': actual}
 
     # --- Pantalla "HE por periodos" ------------------------------------------
 

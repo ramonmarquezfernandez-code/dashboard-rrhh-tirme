@@ -31,6 +31,28 @@
 
   <!-- Menú de navegación -->
   <nav class="flex-1 min-h-0 overflow-y-auto p-4 space-y-1">
+    @if (authService.puedeVer('nuevo-parte')) {
+      <a
+        routerLink="/nuevo-parte"
+        routerLinkActive="bg-tirme-green text-white"
+        class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+      >
+        <span class="text-lg">✏️</span>
+        <span class="font-medium">Nuevo parte</span>
+      </a>
+    }
+    @if (authService.puedeVer('mis-partes')) {
+      <a
+        routerLink="/mis-partes"
+        routerLinkActive="bg-tirme-green text-white"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+      >
+        <span class="text-lg">🗂️</span>
+        <span class="font-medium">Mis partes</span>
+      </a>
+    }
+    <div class="my-2 border-t border-slate-700"></div>
     @if (authService.puedeVer('resumen-general')) {
       <a
         routerLink="/resumen-general"
@@ -49,16 +71,6 @@
       >
         <span class="text-lg">👥</span>
         <span class="font-medium">Personal</span>
-      </a>
-    }
-    @if (authService.puedeVer('turnos')) {
-      <a
-        routerLink="/turnos"
-        routerLinkActive="bg-tirme-green text-white"
-        class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
-      >
-        <span class="text-lg">📅</span>
-        <span class="font-medium">Turnos y Horarios</span>
       </a>
     }
     @if (authService.puedeVer('horas-extra')) {

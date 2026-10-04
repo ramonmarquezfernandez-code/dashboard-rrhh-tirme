@@ -1,0 +1,156 @@
+# HE por periodos, periodo de nómina 06 · perfil mando · sentencia 1
+
+SELECT zparte.`MES` AS mes, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total 
+FROM zparte 
+WHERE (zparte.`PERNR` = '00000105' OR zparte.`CODGR` IN (3)) AND zparte.`EJERC` = '2025' AND zparte.`MES` = '06' GROUP BY zparte.`MES`
+
+## 1. Solo clave primaria — mediana 54.15 ms, mínimo 52.84 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=ALL | possible_keys=None | key=None | key_len=None | ref=None | rows=99931 | Extra=Using where
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 18.384465,
+    "nested_loop": [
+      {
+        "table": {
+          "table_name": "zparte",
+          "access_type": "ALL",
+          "loops": 1,
+          "rows": 99931,
+          "cost": 18.384465,
+          "filtered": 100,
+          "attached_condition": "(zparte.PERNR = '00000105' or zparte.CODGR = 3) and zparte.EJERC = '2025' and zparte.MES = '06'"
+        }
+      }
+    ]
+  }
+}
+
+## 2. Índices de producción — mediana 1.99 ms, mínimo 1.89 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=index_merge | possible_keys=idx_unico_persona_dia,idx_ejer_month,idx_mes_ejer,idx_mes_mes_ejerc_padat,idx_zparte_codgr,idx_zparte_ejerc,idx_zparte_ejerc_codgr,idx_zparte_ejerc_mes_codgr_stat,idx_Zparte_pernr_group,ZPARTE_GROUP_IDX,zparte_PERNR_IDX,zparte_PERNR_MES_EJERC_IDX | key=zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_mes_codgr_stat | key_len=50,29 | ref=None | rows=347 | Extra=Using sort_union(zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_mes_codgr_stat); Using where
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 0.653112963,
+    "nested_loop": [
+      {
+        "table": {
+          "table_name": "zparte",
+          "access_type": "index_merge",
+          "possible_keys": [
+            "idx_unico_persona_dia",
+            "idx_ejer_month",
+            "idx_mes_ejer",
+            "idx_mes_mes_ejerc_padat",
+            "idx_zparte_codgr",
+            "idx_zparte_ejerc",
+            "idx_zparte_ejerc_codgr",
+            "idx_zparte_ejerc_mes_codgr_stat",
+            "idx_Zparte_pernr_group",
+            "ZPARTE_GROUP_IDX",
+            "zparte_PERNR_IDX",
+            "zparte_PERNR_MES_EJERC_IDX"
+          ],
+          "key_length": "50,29",
+          "index_merge": {
+            "sort_union": [
+              {
+                "range": {
+                  "key": "zparte_PERNR_MES_EJERC_IDX",
+                  "used_key_parts": [
+                    "PERNR",
+                    "MES",
+                    "EJERC"
+                  ]
+                }
+              },
+              {
+                "range": {
+                  "key": "idx_zparte_ejerc_mes_codgr_stat",
+                  "used_key_parts": [
+                    "EJERC",
+                    "MES",
+                    "CODGR"
+                  ]
+                }
+              }
+            ]
+          },
+          "loops": 1,
+          "rows": 347,
+          "cost": 0.653112963,
+          "filtered": 100,
+          "attached_condition": "(zparte.PERNR = '00000105' or zparte.CODGR = 3) and zparte.EJERC = '2025' and zparte.MES = '06'"
+        }
+      }
+    ]
+  }
+}
+
+## 3. Producción + propuestos — mediana 1.98 ms, mínimo 1.77 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=index_merge | possible_keys=idx_unico_persona_dia,idx_ejer_month,idx_mes_ejer,idx_mes_mes_ejerc_padat,idx_zparte_codgr,idx_zparte_ejerc,idx_zparte_ejerc_codgr,idx_zparte_ejerc_mes_codgr_stat,idx_Zparte_pernr_group,ZPARTE_GROUP_IDX,zparte_PERNR_IDX,zparte_PERNR_MES_EJERC_IDX,idx_zparte_codgr_padat | key=zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_mes_codgr_stat | key_len=50,29 | ref=None | rows=347 | Extra=Using sort_union(zparte_PERNR_MES_EJERC_IDX,idx_zparte_ejerc_mes_codgr_stat); Using where
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 0.653112963,
+    "nested_loop": [
+      {
+        "table": {
+          "table_name": "zparte",
+          "access_type": "index_merge",
+          "possible_keys": [
+            "idx_unico_persona_dia",
+            "idx_ejer_month",
+            "idx_mes_ejer",
+            "idx_mes_mes_ejerc_padat",
+            "idx_zparte_codgr",
+            "idx_zparte_ejerc",
+            "idx_zparte_ejerc_codgr",
+            "idx_zparte_ejerc_mes_codgr_stat",
+            "idx_Zparte_pernr_group",
+            "ZPARTE_GROUP_IDX",
+            "zparte_PERNR_IDX",
+            "zparte_PERNR_MES_EJERC_IDX",
+            "idx_zparte_codgr_padat"
+          ],
+          "key_length": "50,29",
+          "index_merge": {
+            "sort_union": [
+              {
+                "range": {
+                  "key": "zparte_PERNR_MES_EJERC_IDX",
+                  "used_key_parts": [
+                    "PERNR",
+                    "MES",
+                    "EJERC"
+                  ]
+                }
+              },
+              {
+                "range": {
+                  "key": "idx_zparte_ejerc_mes_codgr_stat",
+                  "used_key_parts": [
+                    "EJERC",
+                    "MES",
+                    "CODGR"
+                  ]
+                }
+              }
+            ]
+          },
+          "loops": 1,
+          "rows": 347,
+          "cost": 0.653112963,
+          "filtered": 100,
+          "attached_condition": "(zparte.PERNR = '00000105' or zparte.CODGR = 3) and zparte.EJERC = '2025' and zparte.MES = '06'"
+        }
+      }
+    ]
+  }
+}

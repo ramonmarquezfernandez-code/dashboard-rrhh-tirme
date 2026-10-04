@@ -1,0 +1,110 @@
+# HE por empleado, ejercicio 2025 · perfil hr · sentencia 2
+
+SELECT DISTINCT zparte.`DPTO` AS `zparte_DPTO` 
+FROM zparte 
+WHERE zparte.`EJERC` = '2025' AND zparte.`MES` IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') AND zparte.`DPTO` IS NOT NULL ORDER BY zparte.`DPTO` ASC
+
+## 1. Solo clave primaria — mediana 86.66 ms, mínimo 63.22 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=ALL | possible_keys=None | key=None | key_len=None | ref=None | rows=99931 | Extra=Using where; Using temporary; Using filesort
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 85.57824722,
+    "filesort": {
+      "sort_key": "zparte.DPTO",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "ALL",
+              "loops": 1,
+              "rows": 99931,
+              "cost": 18.384465,
+              "filtered": 100,
+              "attached_condition": "zparte.EJERC = '2025' and zparte.MES in ('01','02','03','04','05','06','07','08','09','10','11','12') and zparte.DPTO is not null"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
+## 2. Índices de producción — mediana 59.32 ms, mínimo 57.9 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=ALL | possible_keys=idx_ejer_month,idx_mes_ejer,idx_mes_mes_ejerc_padat,idx_zparte_ejerc,idx_zparte_ejerc_codgr,idx_zparte_ejerc_mes_codgr_stat,ZPARTE_dpto_IDX | key=None | key_len=None | ref=None | rows=97505 | Extra=Using where; Using temporary; Using filesort
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 42.47297372,
+    "filesort": {
+      "sort_key": "zparte.DPTO",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "ALL",
+              "possible_keys": [
+                "idx_ejer_month",
+                "idx_mes_ejer",
+                "idx_mes_mes_ejerc_padat",
+                "idx_zparte_ejerc",
+                "idx_zparte_ejerc_codgr",
+                "idx_zparte_ejerc_mes_codgr_stat",
+                "ZPARTE_dpto_IDX"
+              ],
+              "loops": 1,
+              "rows": 97505,
+              "cost": 17.989027,
+              "filtered": 37.5632019,
+              "attached_condition": "zparte.EJERC = '2025' and zparte.MES in ('01','02','03','04','05','06','07','08','09','10','11','12') and zparte.DPTO is not null"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
+## 3. Producción + propuestos — mediana 54.04 ms, mínimo 50.73 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=ALL | possible_keys=idx_ejer_month,idx_mes_ejer,idx_mes_mes_ejerc_padat,idx_zparte_ejerc,idx_zparte_ejerc_codgr,idx_zparte_ejerc_mes_codgr_stat,ZPARTE_dpto_IDX | key=None | key_len=None | ref=None | rows=94747 | Extra=Using where; Using temporary; Using filesort
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 42.02341972,
+    "filesort": {
+      "sort_key": "zparte.DPTO",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "ALL",
+              "possible_keys": [
+                "idx_ejer_month",
+                "idx_mes_ejer",
+                "idx_mes_mes_ejerc_padat",
+                "idx_zparte_ejerc",
+                "idx_zparte_ejerc_codgr",
+                "idx_zparte_ejerc_mes_codgr_stat",
+                "ZPARTE_dpto_IDX"
+              ],
+              "loops": 1,
+              "rows": 94747,
+              "cost": 17.539473,
+              "filtered": 38.65663147,
+              "attached_condition": "zparte.EJERC = '2025' and zparte.MES in ('01','02','03','04','05','06','07','08','09','10','11','12') and zparte.DPTO is not null"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

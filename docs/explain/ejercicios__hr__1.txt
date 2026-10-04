@@ -1,0 +1,103 @@
+# Años disponibles (combo de año) · perfil hr · sentencia 1
+
+SELECT DISTINCT zparte.`EJERC` AS `zparte_EJERC` 
+FROM zparte 
+WHERE zparte.`EJERC` IS NOT NULL
+
+## 1. Solo clave primaria — mediana 49.86 ms, mínimo 48.19 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=ALL | possible_keys=None | key=None | key_len=None | ref=None | rows=99931 | Extra=Using where; Using temporary
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 18.384465,
+    "temporary_table": {
+      "nested_loop": [
+        {
+          "table": {
+            "table_name": "zparte",
+            "access_type": "ALL",
+            "loops": 1,
+            "rows": 99931,
+            "cost": 18.384465,
+            "filtered": 100,
+            "attached_condition": "zparte.EJERC is not null"
+          }
+        }
+      ]
+    }
+  }
+}
+
+## 2. Índices de producción — mediana 0.85 ms, mínimo 0.8 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=range | possible_keys=idx_ejer_month,idx_zparte_ejerc,idx_zparte_ejerc_codgr,idx_zparte_ejerc_mes_codgr_stat | key=idx_ejer_month | key_len=15 | ref=None | rows=3 | Extra=Using where; Using index for group-by
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 0.005080815,
+    "nested_loop": [
+      {
+        "table": {
+          "table_name": "zparte",
+          "access_type": "range",
+          "possible_keys": [
+            "idx_ejer_month",
+            "idx_zparte_ejerc",
+            "idx_zparte_ejerc_codgr",
+            "idx_zparte_ejerc_mes_codgr_stat"
+          ],
+          "key": "idx_ejer_month",
+          "key_length": "15",
+          "used_key_parts": [
+            "EJERC"
+          ],
+          "loops": 1,
+          "rows": 3,
+          "cost": 0.005080815,
+          "filtered": 100,
+          "attached_condition": "zparte.EJERC is not null",
+          "using_index_for_group_by": true
+        }
+      }
+    ]
+  }
+}
+
+## 3. Producción + propuestos — mediana 0.82 ms, mínimo 0.6 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=range | possible_keys=idx_ejer_month,idx_zparte_ejerc,idx_zparte_ejerc_codgr,idx_zparte_ejerc_mes_codgr_stat | key=idx_ejer_month | key_len=15 | ref=None | rows=3 | Extra=Using where; Using index for group-by
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 0.005080815,
+    "nested_loop": [
+      {
+        "table": {
+          "table_name": "zparte",
+          "access_type": "range",
+          "possible_keys": [
+            "idx_ejer_month",
+            "idx_zparte_ejerc",
+            "idx_zparte_ejerc_codgr",
+            "idx_zparte_ejerc_mes_codgr_stat"
+          ],
+          "key": "idx_ejer_month",
+          "key_length": "15",
+          "used_key_parts": [
+            "EJERC"
+          ],
+          "loops": 1,
+          "rows": 3,
+          "cost": 0.005080815,
+          "filtered": 100,
+          "attached_condition": "zparte.EJERC is not null",
+          "using_index_for_group_by": true
+        }
+      }
+    ]
+  }
+}

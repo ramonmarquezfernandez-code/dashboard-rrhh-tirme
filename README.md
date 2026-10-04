@@ -133,7 +133,7 @@ python app.py          # o bien: ./run.sh
 ```
 
 - **`python seed.py`** crea los usuarios de prueba con contraseña cifrada (bcrypt) y sus roles (tabla de abajo). Se puede ejecutar varias veces.
-- **`pytest`** debe terminar con `97 passed`.
+- **`pytest`** debe terminar con `159 passed`.
   - Los tests de login, de acceso a datos y de cálculo de horas extra usan la BD `epartes_test` del contenedor.
   - Si MariaDB no está levantada, esos tests aparecen como *skipped*, con el motivo, y solo se ejecutan los 24 que no necesitan BD.
 - **`python app.py`** deja el servidor escuchando en http://localhost:5000. Deja esa terminal abierta.
@@ -183,11 +183,75 @@ Abre http://localhost:4200 y entra con uno de los [usuarios de prueba](#usuarios
 - **Sesión:** se guarda en el navegador y se mantiene al recargar la página, durante 8 horas como máximo.
 - **Menú lateral:** solo muestra las pantallas permitidas para el perfil con el que has entrado.
 
+| Pantalla | HR | Mando | Empleado |
+|---|---|---|---|
+| Nuevo parte / Mis partes (sus propios partes de trabajo) | ✔ | ✔ | ✔ |
+| Resumen General (plantilla por grupo, área y departamento) | ✔ | ✔ (sus grupos) | — |
+| Personal (directorio de empleados activos) | ✔ | ✔ (sus grupos) | — |
+| HE por periodos / HE por empleado / Total SP retribuidas | ✔ | ✔ | ✔ (solo sus datos) |
+| Ranking HE Combo | ✔ | ✔ | — |
+
+Cada pantalla tiene su propia barra de filtros. Los años y los estados de los combos salen de la API (`/api/partes/ejercicios` y `/api/partes/estados`).
+
 Para generar la versión de producción: `npm run build` (sale en `frontend/dist/`).
 
 ---
 
-## 7. Operaciones habituales
+### Formulario de parte de trabajo
+
+Cualquier empleado, sea cual sea su perfil, puede registrar su parte diario en **Nuevo parte** y consultarlo en **Mis partes**.
+
+- **Estados:** el parte se guarda en estado `B` (*creado por el empleado*). Se puede modificar o borrar hasta que recibe el visto bueno del jefe de área; a partir de ahí solo se puede consultar.
+- **Estructura:** el formulario se organiza en bloques.
+  1. **Día:** fecha y turno. El tipo de día (laborable, sábado, domingo o festivo) se calcula solo; se puede marcar *festivo local*.
+  2. **Horario:** entrada, salida y pausa. El **tiempo de presencia** se calcula a partir de ellas: admite turnos que cruzan la medianoche, y la misma hora de entrada y salida cuenta como 24 h.
+  3. **Horas extra:** un bloque por tipo (normales, a compensar, busca, busca no pagada, combo, combo programadas y F), cada uno con sus tramos diurno/nocturno y laborable/festivo, y otro bloque para **llamadas** (número de llamadas).
+  4. **Situación del día:** Art. 21 descanso, Descanso o Teletrabajo (como máximo una), y las demás marcas en casillas (SP = superior categoría, SUST = sustitución…).
+  5. **Otros:** kilómetros y observaciones.
+- **Controles:** se comprueban al momento en el navegador y de nuevo en el servidor (`services/parte_service.py`).
+  - **Horas extra:** como máximo **24 h en total** (las llamadas no suman), y nunca más que el tiempo de presencia. Cada bloque con horas exige su **motivo**. Las horas festivas solo se admiten en sábado, domingo o festivo.
+  - **Fechas:** solo hasta hoy, y nunca en un periodo de nómina ya traspasado. Un solo parte por día y turno.
+  - **Otras:** teletrabajo sin kilómetros, y la sustitución exige su motivo.
+- **Campos calculados:** el servidor rellena el número de personal (del token), el periodo de nómina (de `zperiodos`), el grupo, el departamento, la presencia (`HN`/`HNDEC`) y el estado. Ninguno de ellos viene del navegador.
+- **Etiquetas de las marcas:** se cambian en `dashboard_rrhh/services/parte_campos.py`, la única definición del formulario, que el frontend lee de la API.
+
+---
+
+## 7. Datos de demostración y rendimiento
+
+El dump solo trae unos pocos registros. Para ver el dashboard con un volumen realista, ejecuta desde `dashboard_rrhh/` con el venv activo:
+
+```bash
+python generar_datos.py        # ~25 s
+```
+
+- **Qué genera:** 250 empleados (un 20 % ya dados de baja) en 25 grupos y unos **100.000 partes** desde el 1 de enero de hace dos años hasta hoy.
+- **Datos inventados:** todos los nombres, números de personal y correos son ficticios. Las proporciones imitan las de la explotación real, que solo se ha analizado de forma estadística, sin copiar ningún registro:
+  - turnos, tipo de día y estados de los partes;
+  - un 6 % de partes con horas extra;
+  - periodos de nómina del día 11 al 10;
+  - roles FI en todos los grupos y VB en algunos.
+- **Usuarios de prueba:** se mantienen los 5 del apartado 5, con la misma contraseña (`Tirme2026!`), que vale para todos los empleados.
+- **Atención:** **sustituye** los datos de `epartes_local` (partes, empleados, grupos, roles y periodos) y no se ejecuta sobre una BD cuyo nombre contenga `prod`.
+- **Opciones:** `--partes N`, `--semilla S` y `--hasta AAAA-MM-DD`. Con la misma semilla y fecha genera exactamente los mismos datos; lo confirma la "huella" que imprime al final.
+
+Para medir el efecto de los índices en las consultas del dashboard, un solo comando lo hace todo (≈ 2 min):
+
+```bash
+python medir_rendimiento.py
+```
+
+1. Genera los datos con semilla y fecha fijas.
+2. Captura el SQL que ejecuta la app para los perfiles HR, mando y empleado.
+3. Lo mide con tres conjuntos de índices sobre `zparte`: solo clave primaria, índices de producción, y producción más 2 índices propuestos.
+4. Escribe el informe en [docs/rendimiento.md](docs/rendimiento.md), con la tabla de tiempos y las conclusiones. También genera `docs/explain/` (el `EXPLAIN` de cada sentencia), `docs/rendimiento.json` y `docs/indices_propuestos.sql`.
+5. Deja la tabla con los índices de producción.
+
+> El esquema de `epartes_local_backup.sql` replica el de producción: tablas en `utf8mb3_general_ci` y los mismos índices. Si tu volumen de Docker se creó con una versión anterior del dump, recréalo con `docker compose down -v` y `docker compose up -d`, y vuelve a ejecutar `python seed.py` o `python generar_datos.py`.
+
+---
+
+## 8. Operaciones habituales
 
 | Acción | Comando |
 |---|---|
@@ -196,11 +260,11 @@ Para generar la versión de producción: `npm run build` (sale en `frontend/dist
 | **Borrar la BD y recargar el dump desde cero** | `docker compose down -v`, luego `docker compose up -d` y después `python seed.py` |
 | Volver a crear los usuarios de prueba | `python seed.py` (desde `dashboard_rrhh/` con el venv activo) |
 | Ver logs de MariaDB | `docker compose logs -f mariadb` |
-| Cargar datos desde CSV exportados (opcional) | `python cargar_csv.py <carpeta_con_csv>` (desde `dashboard_rrhh/` con el venv activo) |
+| Cargar datos desde CSV exportados (opcional) | `python cargar_csv.py <carpeta_con_csv>` (desde `dashboard_rrhh/` con el venv activo). **Solo en entornos autorizados:** los datos reales están sujetos a la LOPD; para desarrollo y demostración usa `generar_datos.py`. |
 
 ---
 
-## 8. Problemas frecuentes
+## 9. Problemas frecuentes
 
 | Síntoma | Solución |
 |---|---|
@@ -216,13 +280,14 @@ Para generar la versión de producción: `npm run build` (sale en `frontend/dist
 
 ---
 
-## 9. Seguridad y limitaciones conocidas
+## 10. Seguridad y limitaciones conocidas
 
 ### Medidas implementadas
 
 | Medida | Dónde |
 |---|---|
 | Contraseñas guardadas como hash **bcrypt**; no se acepta ninguna en texto plano. | `services/auth_service.py` |
+| Datos de desarrollo y demostración **inventados** (`generar_datos.py`); los datos reales solo se han analizado de forma agregada (LOPD). | `generar_datos.py` |
 | Mismo mensaje y tiempo de respuesta tanto si el correo no existe como si la contraseña es errónea, para no revelar qué correos están registrados. `get-roles` también exige la contraseña. | `services/auth_service.py`, `routes/auth.py` |
 | El servidor comprueba en `zgrroles` que el usuario tiene el perfil que elige al entrar (403 si no). | `routes/auth.py`, `services/rol_service.py` |
 | Sesión con **JWT** firmado (HS256), válido 8 horas. | `config.py` |
@@ -242,7 +307,7 @@ Para generar la versión de producción: `npm run build` (sale en `frontend/dist
 | No hay límite de intentos de login. | Ataques de fuerza bruta contra las contraseñas. | Limitar intentos por IP y usuario (p. ej. Flask-Limiter). |
 | Si `SECRET_KEY` y `JWT_SECRET_KEY` no se definen en `.env`, se usa una clave por defecto, y la de `.env.example` es un texto de ejemplo. | Con una clave conocida, cualquiera podría fabricar tokens válidos. | Generar siempre claves propias (paso 3) o hacer que la app no arranque sin ellas. |
 | Compatibilidad con la app Java corporativa, que comparte `userpayroll.PASSWORD`. | Python genera hashes `$2b$`. Spring Security (`BCryptPasswordEncoder` 5.2+) los acepta; versiones antiguas o jBCrypt solo aceptan `$2a$`. Python sí acepta los `$2a$` de Java. | Confirmarlo con la app corporativa antes de compartir la BD. |
-| No se sabe qué valor marca un parte como SP (`zparte.SP` es `char(1)` y el dump no trae ejemplos). | Se acepta `'t'`, `'X'`, `'1'` o `'S'` (`VALORES_MARCADO` en `services/sp_service.py`); si la app corporativa usa otro valor, la pantalla de SP mostrará 0. | Confirmarlo con la app corporativa y ajustar la constante. |
+| Las pantallas anuales de HR recorren toda `zparte` (un tercio de las filas por ejercicio). | Con 100.000 partes responden en unos 0,2-0,4 s; con muchos más años de histórico crecerían de forma lineal. | Tablas de resumen precalculadas o particionado por ejercicio. Ver [docs/rendimiento.md](docs/rendimiento.md) y los índices propuestos en `docs/indices_propuestos.sql`. |
 | `python app.py` usa el servidor de desarrollo de Flask, sin HTTPS. | No apto para producción. | Servidor WSGI (waitress o gunicorn) detrás de un proxy con HTTPS. |
 
 ---

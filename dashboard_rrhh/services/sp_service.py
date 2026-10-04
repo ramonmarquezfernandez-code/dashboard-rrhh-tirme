@@ -8,17 +8,20 @@ from extensions import db
 from models import UserPayroll, ZParte
 from services.filtro_partes import FiltroPartesBuilder, ParametroInvalido
 
-# Las marcas de zparte (SP, PA, SUST...) son char(1). TELETRABAJO usa 't'/'f';
-# para SP/PA/SUST no hay datos de ejemplo, así que se admiten las convenciones
-# habituales. SUPUESTO PENDIENTE DE CONFIRMAR con la app corporativa.
+# Las marcas de zparte (SP, SUST, BLV...) son char(1). En la explotación real
+# (perfil estadístico, sin copiar registros) SP marcado vale 'X' y 'f' significa
+# "no marcado". Se admiten también 't', '1' y 'S' por compatibilidad.
 VALORES_MARCADO = ('t', 'X', '1', 'S')
 
 VENTANAS_MESES = (12, 24)
 
 
 def marcado(columna):
-    """Condición SQL: la marca char(1) está activada ('f', '0', vacío y NULL no cuentan)."""
-    return func.trim(columna).in_(VALORES_MARCADO)
+    """Condición SQL: la marca char(1) está activada ('f', '0', vacío y NULL no cuentan).
+
+    Sin trim(): en CHAR(1) no aporta nada y una función sobre la columna impediría usar
+    un índice (ver docs/rendimiento.md, índice propuesto sobre SP y PADAT)."""
+    return columna.in_(VALORES_MARCADO)
 
 
 def restar_meses(fecha, meses):

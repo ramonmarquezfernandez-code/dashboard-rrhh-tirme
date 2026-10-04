@@ -80,7 +80,34 @@ La API tiene una única versión: todos sus endpoints aparecen en Swagger.
 | `GET /he-por-empleado` | todos | Pantalla *HE por empleado* |
 | `GET /ranking-combo` | hr, mando | Pantalla *Ranking HE Combo* |
 | `GET /sp-resumen-periodos` | todos | Pantalla *Total SP retribuidas* |
-| `GET /plantilla-resumen` | hr, mando | Pantalla *Resumen General* |
+| `GET /plantilla-resumen` | hr, mando | Pantalla *Resumen General* (incluye `grupos` y `areas` para los combos) |
+| `GET /personal` | hr, mando | Pantalla *Personal*: empleados activos (`grupo`, `direccion`); sin datos sensibles |
+| `GET /ejercicios` | todos | Años con partes visibles más el año en curso, y el año por defecto (`actual`) |
+
+**Partes del propio empleado** (`/api/mis-partes`, todos los perfiles; el número de personal sale siempre del token)
+
+| Endpoint | Uso |
+|---|---|
+| `GET /configuracion` | Definición del formulario: bloques, tramos, situaciones, marcas, turnos, festivos y límites |
+| `GET /?anio=2026` | Mis partes del ejercicio, con estado y si aún se pueden modificar |
+| `POST /` | Crea un parte (estado `B`) |
+| `GET /{mandt}` | Un parte propio en formato de formulario (404 si no es tuyo) |
+| `PUT /{mandt}`, `DELETE /{mandt}` | Modifica o borra un parte propio en estado `B` (409 si ya tiene visto bueno) |
+
+Ejemplo de alta y de error de validación:
+
+```bash
+curl -X POST http://localhost:5000/api/mis-partes -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"fecha": "2026-10-02", "turno": "T", "entrada": "07:00", "salida": "18:00",
+       "horas": {"normales": {"DL": 3}}, "motivos": {"normales": "Avería en planta"},
+       "situacion": "ninguna", "marcas": ["SP"]}'
+# 201 -> {"mandt": ..., "presencia_minutos": 660, "total_he": 3, "estado": "B", ...}
+
+# Sin motivo o con más de 24 h extra -> 400:
+# {"message": "Revisa los datos del parte.",
+#  "errores": {"motivos.normales": "Indica el motivo de: horas extra normales."}}
+```
 | `GET /resumen-departamento`, `/resumen-trabajador`, `/comite`, `/he-anio-natural` | todos | Resúmenes del ejercicio (`anio`) |
 
 **Parámetros comunes de las pantallas de HE:**
@@ -99,7 +126,7 @@ Si un parámetro no es válido, se responde `400` con `{"message"}`.
 - **Total HE en el Ranking:** lo anterior, más las columnas F y las combo programadas (`TOTAL_HE_RANKING`).
 - **HE compensables convertidas:** DL·1,6 + DF·2 + NL·2 + NF·2,5.
 
-**SP:** un parte cuenta como SP si `zparte.SP` vale uno de `VALORES_MARCADO` (`'t'`, `'X'`, `'1'`, `'S'`), definido en `services/sp_service.py`. `'f'`, `'0'`, el valor vacío y NULL no cuentan. Es un **supuesto pendiente de confirmar** con la app corporativa, porque el dump no trae valores de ejemplo.
+**SP:** un parte cuenta como SP si `zparte.SP` vale uno de `VALORES_MARCADO` (`'t'`, `'X'`, `'1'`, `'S'`), definido en `services/sp_service.py`. `'f'`, `'0'`, el valor vacío y NULL no cuentan. En los datos reales, revisados solo de forma estadística, SP marcado vale `'X'` y `'f'` significa "no marcado".
 
 ### Ventajas de Swagger
 - Documentación clara con descripciones

@@ -1,0 +1,74 @@
+<div class="p-6 space-y-6">
+  <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
+    <div>
+      <h3 class="text-base font-bold text-slate-800">Mis partes de trabajo</h3>
+      <p class="text-xs text-slate-500 mt-1">Puedes modificar o borrar un parte hasta que tenga el visto bueno del jefe de área.</p>
+    </div>
+    <div class="flex items-end gap-3">
+      <label class="grid gap-1 text-[11px] font-bold uppercase text-slate-500">
+        Ejercicio
+        <select [ngModel]="anio()" (ngModelChange)="cambiarAnio($event)" name="anio"
+                class="w-28 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800">
+          @for (a of anios(); track a) { <option [value]="a">{{ a }}</option> }
+        </select>
+      </label>
+      <a routerLink="/nuevo-parte" class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700">+ Nuevo parte</a>
+    </div>
+  </div>
+
+  @if (mensaje()) {
+    <div role="status" class="bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm px-4 py-3 rounded-lg" data-testid="mensaje">{{ mensaje() }}</div>
+  }
+  @if (error()) {
+    <div role="alert" class="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-lg">{{ error() }}</div>
+  }
+
+  <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="flex items-center justify-between p-4 border-b border-slate-100">
+      <span class="font-semibold text-xs text-slate-400 uppercase tracking-wider">Partes del ejercicio {{ anio() }}</span>
+      <span class="text-xs font-semibold text-slate-600">{{ cargando() ? 'Cargando...' : partes().length + ' partes' }}</span>
+    </div>
+    <div class="overflow-x-auto max-h-[36rem]">
+      <table class="min-w-full text-xs">
+        <thead class="sticky top-0 bg-[#0d2f38] text-white uppercase tracking-wider text-[11px]">
+          <tr>
+            <th class="px-4 py-3 text-left">Fecha</th>
+            <th class="px-4 py-3 text-left">Turno</th>
+            <th class="px-4 py-3 text-left">Estado</th>
+            <th class="px-4 py-3 text-right">Presencia</th>
+            <th class="px-4 py-3 text-right">Horas extra</th>
+            <th class="px-4 py-3 text-right">Llamadas</th>
+            <th class="px-4 py-3 text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          @for (parte of partes(); track parte.mandt) {
+            <tr class="even:bg-slate-50" [attr.data-mandt]="parte.mandt">
+              <td class="px-4 py-2.5 font-semibold text-slate-800">{{ parte.fecha | date: 'dd/MM/yyyy' }} <span class="text-slate-400 font-normal">{{ parte.tipodia }}</span></td>
+              <td class="px-4 py-2.5 text-slate-600">{{ parte.turno }}</td>
+              <td class="px-4 py-2.5">
+                <span class="inline-flex items-center gap-1.5">
+                  <span class="h-2.5 w-2.5 rounded-full" [style.background]="parte.estado.color || '#94a3b8'"></span>
+                  {{ parte.estado.etiqueta }}
+                </span>
+              </td>
+              <td class="px-4 py-2.5 text-right text-slate-600">{{ parte.presencia || '—' }}</td>
+              <td class="px-4 py-2.5 text-right font-semibold text-slate-800">{{ parte.total_he }}</td>
+              <td class="px-4 py-2.5 text-right text-slate-600">{{ parte.llamadas }}</td>
+              <td class="px-4 py-2.5 text-right whitespace-nowrap">
+                @if (parte.editable) {
+                  <a [routerLink]="['/mis-partes', parte.mandt]" class="text-emerald-700 font-semibold hover:underline">Editar</a>
+                  <button type="button" (click)="borrar(parte)" class="ml-3 text-red-600 font-semibold hover:underline">Borrar</button>
+                } @else {
+                  <a [routerLink]="['/mis-partes', parte.mandt]" class="text-slate-500 hover:underline" title="Ya validado: solo consulta">🔒 Ver</a>
+                }
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="7" class="px-4 py-8 text-center text-slate-400">{{ cargando() ? 'Cargando...' : 'No tienes partes en este ejercicio.' }}</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

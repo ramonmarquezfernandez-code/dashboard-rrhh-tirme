@@ -1,0 +1,171 @@
+# SP de los últimos 12 y 24 meses · perfil hr · sentencia 1
+
+SELECT userpayroll.`NAME` AS nombre, userpayroll.`SURNAME` AS apellidos, zparte.`PERNR` AS id, zparte.`DPTO` AS departamento, count(*) AS sp 
+FROM zparte LEFT OUTER JOIN userpayroll ON zparte.`PERNR` = userpayroll.`NUMPER` 
+WHERE zparte.`PADAT` BETWEEN '2025-10-03' AND '2026-10-03' AND zparte.`SP` IN ('t', 'X', '1', 'S') GROUP BY zparte.`PERNR`, userpayroll.`NAME`, userpayroll.`SURNAME`, zparte.`DPTO` ORDER BY count(*) DESC, zparte.`PERNR` ASC
+
+## 1. Solo clave primaria — mediana 39.61 ms, mínimo 38.54 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=ALL | possible_keys=None | key=None | key_len=None | ref=None | rows=99931 | Extra=Using where; Using temporary; Using filesort
+  id=1 | select_type=SIMPLE | table=userpayroll | type=ref | possible_keys=userpayroll_NUMPER_IDX | key=userpayroll_NUMPER_IDX | key_len=26 | ref=epartes_local.zparte.PERNR | rows=1 | Extra=
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 267.4735714,
+    "filesort": {
+      "sort_key": "count(0) desc, zparte.PERNR",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "ALL",
+              "loops": 1,
+              "rows": 99931,
+              "cost": 18.384465,
+              "filtered": 100,
+              "attached_condition": "zparte.PADAT between <cache>('2025-10-03') and <cache>('2026-10-03') and zparte.SP in ('t','X','1','S')"
+            }
+          },
+          {
+            "table": {
+              "table_name": "userpayroll",
+              "access_type": "ref",
+              "possible_keys": [
+                "userpayroll_NUMPER_IDX"
+              ],
+              "key": "userpayroll_NUMPER_IDX",
+              "key_length": "26",
+              "used_key_parts": [
+                "NUMPER"
+              ],
+              "ref": [
+                "epartes_local.zparte.PERNR"
+              ],
+              "loops": 99931,
+              "rows": 1,
+              "cost": 181.8953242,
+              "filtered": 100
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
+## 2. Índices de producción — mediana 44.06 ms, mínimo 40.69 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=ALL | possible_keys=idx_mes_padat | key=None | key_len=None | ref=None | rows=97505 | Extra=Using where; Using temporary; Using filesort
+  id=1 | select_type=SIMPLE | table=userpayroll | type=ref | possible_keys=userpayroll_NUMPER_IDX | key=userpayroll_NUMPER_IDX | key_len=26 | ref=epartes_local.zparte.PERNR | rows=1 | Extra=
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 198.0749307,
+    "filesort": {
+      "sort_key": "count(0) desc, zparte.PERNR",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "ALL",
+              "possible_keys": [
+                "idx_mes_padat"
+              ],
+              "loops": 1,
+              "rows": 97505,
+              "cost": 17.989027,
+              "filtered": 74.13363647,
+              "attached_condition": "zparte.PADAT between '2025-10-03' and '2026-10-03' and zparte.SP in ('t','X','1','S')"
+            }
+          },
+          {
+            "table": {
+              "table_name": "userpayroll",
+              "access_type": "ref",
+              "possible_keys": [
+                "userpayroll_NUMPER_IDX"
+              ],
+              "key": "userpayroll_NUMPER_IDX",
+              "key_length": "26",
+              "used_key_parts": [
+                "NUMPER"
+              ],
+              "ref": [
+                "epartes_local.zparte.PERNR"
+              ],
+              "loops": 72284,
+              "rows": 1,
+              "cost": 131.5733606,
+              "filtered": 100
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
+## 3. Producción + propuestos — mediana 6.4 ms, mínimo 6.29 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=range | possible_keys=idx_mes_padat,idx_zparte_sp_padat | key=idx_zparte_sp_padat | key_len=7 | ref=None | rows=860 | Extra=Using index condition; Using temporary; Using filesort
+  id=1 | select_type=SIMPLE | table=userpayroll | type=ref | possible_keys=userpayroll_NUMPER_IDX | key=userpayroll_NUMPER_IDX | key_len=26 | ref=epartes_local.zparte.PERNR | rows=1 | Extra=
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 3.696245887,
+    "filesort": {
+      "sort_key": "count(0) desc, zparte.PERNR",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "range",
+              "possible_keys": [
+                "idx_mes_padat",
+                "idx_zparte_sp_padat"
+              ],
+              "key": "idx_zparte_sp_padat",
+              "key_length": "7",
+              "used_key_parts": [
+                "SP",
+                "PADAT"
+              ],
+              "loops": 1,
+              "rows": 860,
+              "cost": 1.5636808,
+              "filtered": 100,
+              "index_condition": "zparte.PADAT between '2025-10-03' and '2026-10-03' and zparte.SP in ('t','X','1','S')"
+            }
+          },
+          {
+            "table": {
+              "table_name": "userpayroll",
+              "access_type": "ref",
+              "possible_keys": [
+                "userpayroll_NUMPER_IDX"
+              ],
+              "key": "userpayroll_NUMPER_IDX",
+              "key_length": "26",
+              "used_key_parts": [
+                "NUMPER"
+              ],
+              "ref": [
+                "epartes_local.zparte.PERNR"
+              ],
+              "loops": 860,
+              "rows": 1,
+              "cost": 1.5702528,
+              "filtered": 100
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,33 +1,34 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { FiltrosService } from '../../services/filtros';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
 
+// Cabecera de la zona de contenido: muestra el título de la pantalla actual
+// (data.titulo de la ruta, ver app.routes.ts). Los filtros viven en cada pantalla.
 @Component({
   selector: 'app-header-filtros',
   standalone: true,
-  imports: [CommonModule, FormsModule],
   templateUrl: './header-filtros.html',
   styleUrl: './header-filtros.scss',
 })
 export class HeaderFiltros {
-  // Inyectamos el servicio global de Signals
-  public filtrosService = inject(FiltrosService);
+  private readonly router = inject(Router);
+  public titulo = signal('');
 
-  // Métodos que capturan los cambios en los selects y actualizan el estado global
-  onDireccionChange(event: any) {
-    this.filtrosService.actualizarFiltros({ direccion: event.target.value });
+  constructor() {
+    this.actualizarTitulo();
+    this.router.events
+      .pipe(filter((evento) => evento instanceof NavigationEnd), takeUntilDestroyed(inject(DestroyRef)))
+      .subscribe(() => this.actualizarTitulo());
   }
 
-  onGrupoChange(event: any) {
-    this.filtrosService.actualizarFiltros({ grupo: event.target.value });
-  }
-
-  onFechaChange(campo: 'fechaDesde' | 'fechaHasta', valor: string) {
-    const cambios = { [campo]: valor } as Partial<ReturnType<typeof this.filtrosService.filtros>>;
-    if (campo === 'fechaDesde' && valor) {
-      cambios.anio = Number(valor.slice(0, 4));
+  private actualizarTitulo() {
+    let ruta: ActivatedRouteSnapshot | null = this.router.routerState.snapshot.root;
+    let titulo = '';
+    while (ruta) {
+      titulo = ruta.data['titulo'] ?? titulo;
+      ruta = ruta.firstChild;
     }
-    this.filtrosService.actualizarFiltros(cambios);
+    this.titulo.set(titulo);
   }
 }

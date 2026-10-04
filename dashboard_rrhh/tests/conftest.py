@@ -39,7 +39,11 @@ def app_bd():
             )
         db.create_all()
         cargar_datos_prueba(db.session)
-        yield app
+    # El contexto NO queda abierto durante los tests: así cada petición del cliente de
+    # pruebas usa su propia sesión de BD, como en producción (si no, todas compartirían
+    # una transacción y leerían datos antiguos).
+    yield app
+    with app.app_context():
         db.session.remove()
         db.drop_all()
 

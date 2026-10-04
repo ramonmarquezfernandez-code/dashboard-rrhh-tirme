@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize, Subject, Subscription, takeUntil } from 'rxjs';
-import { HeEmpleado, HePeriodo, HeService } from '../../services/he.service';
+import { elegirAnio, HeEmpleado, HeEstado, HePeriodo, HeService } from '../../services/he.service';
 
 @Component({
   selector: 'app-horas-extra-empleados',
@@ -17,7 +17,9 @@ export class HorasExtraEmpleados implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
   private solicitud?: Subscription;
 
-  public anio = 2026;
+  // El año por defecto y los años del combo salen de /api/partes/ejercicios
+  public anio = new Date().getFullYear();
+  public anios: number[] = [this.anio];
   public mesDesde = 1;
   public mesHasta = 12;
   public anioNatural = false;
@@ -27,12 +29,8 @@ export class HorasExtraEmpleados implements OnInit, OnDestroy {
   public periodo = '';
   public orden = 'horas';
 
-  public readonly estados = [
-    { valor: '', etiqueta: 'Todos los estados' },
-    { valor: 'P', etiqueta: 'Pendiente' },
-    { valor: 'V', etiqueta: 'Validado' },
-    { valor: 'T', etiqueta: 'Traspasado a nómina' },
-  ];
+  // Estados reales de eppartstatus (se cargan al iniciar)
+  public estados: HeEstado[] = [{ valor: '', etiqueta: 'Todos los estados' }];
 
   public empleados: HeEmpleado[] = [];
   public trabajadoresDisponibles: HeEmpleado[] = [];
@@ -43,7 +41,37 @@ export class HorasExtraEmpleados implements OnInit, OnDestroy {
   public errorMessage = '';
 
   public ngOnInit() {
-    this.cargar();
+    this.cargarEstados();
+    this.cargarEjercicios();
+  }
+
+  private cargarEstados() {
+    this.heService
+      .obtenerEstados()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (estados) => {
+          this.estados = [{ valor: '', etiqueta: 'Todos los estados' }, ...(estados || [])];
+          this.changeDetector.markForCheck();
+        },
+        error: () => {
+          // Si falla, se mantiene la opción por defecto
+        },
+      });
+  }
+
+  // Carga los años con datos y, después, la pantalla con el año por defecto
+  private cargarEjercicios() {
+    this.heService
+      .obtenerEjercicios()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (respuesta) => {
+          ({ anios: this.anios, anio: this.anio } = elegirAnio(respuesta));
+          this.cargar();
+        },
+        error: () => this.cargar(),
+      });
   }
 
   public cargar() {

@@ -1,0 +1,184 @@
+# HE por periodos, año natural 2025 · perfil empleado · sentencia 3
+
+SELECT userpayroll.`NAME` AS nombre, userpayroll.`SURNAME` AS apellidos, zparte.`PERNR` AS id, zparte.`DPTO` AS departamento, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total 
+FROM zparte LEFT OUTER JOIN userpayroll ON zparte.`PERNR` = userpayroll.`NUMPER` 
+WHERE zparte.`PERNR` = '00000012' AND zparte.`PADAT` BETWEEN '2025-01-01' AND '2025-12-31' GROUP BY zparte.`PERNR`, userpayroll.`NAME`, userpayroll.`SURNAME`, zparte.`DPTO` ORDER BY coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) DESC, zparte.`PERNR` ASC
+
+## 1. Solo clave primaria — mediana 54.66 ms, mínimo 52.88 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=ALL | possible_keys=None | key=None | key_len=None | ref=None | rows=99931 | Extra=Using where; Using temporary; Using filesort
+  id=1 | select_type=SIMPLE | table=userpayroll | type=ref | possible_keys=userpayroll_NUMPER_IDX | key=userpayroll_NUMPER_IDX | key_len=26 | ref=epartes_local.zparte.PERNR | rows=1 | Extra=
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 200.2797892,
+    "filesort": {
+      "sort_key": "coalesce(sum(zparte.DL + zparte.DF + zparte.NL + zparte.NF + zparte.DLC + zparte.DFC + zparte.NLC + zparte.NFC + zparte.DLB + zparte.DFB + zparte.NLB + zparte.NFB + zparte.DLBN + zparte.DFBN + zparte.NLBN + zparte.NFBN + zparte.DLCO + zparte.DFCO + zparte.NLCO + zparte.NFCO),0) desc",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "ALL",
+              "loops": 1,
+              "rows": 99931,
+              "cost": 18.384465,
+              "filtered": 100,
+              "attached_condition": "zparte.PERNR = '00000012' and zparte.PADAT between <cache>('2025-01-01') and <cache>('2025-12-31')"
+            }
+          },
+          {
+            "table": {
+              "table_name": "userpayroll",
+              "access_type": "ref",
+              "possible_keys": [
+                "userpayroll_NUMPER_IDX"
+              ],
+              "key": "userpayroll_NUMPER_IDX",
+              "key_length": "26",
+              "used_key_parts": [
+                "NUMPER"
+              ],
+              "ref": [
+                "epartes_local.zparte.PERNR"
+              ],
+              "loops": 99931,
+              "rows": 1,
+              "cost": 181.8953242,
+              "filtered": 100
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
+## 2. Índices de producción — mediana 2.0 ms, mínimo 1.78 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=range | possible_keys=idx_unico_persona_dia,idx_mes_padat,idx_Zparte_pernr_group,zparte_PERNR_IDX,zparte_PERNR_MES_EJERC_IDX | key=idx_unico_persona_dia | key_len=29 | ref=None | rows=156 | Extra=Using index condition; Using temporary; Using filesort
+  id=1 | select_type=SIMPLE | table=userpayroll | type=ref | possible_keys=userpayroll_NUMPER_IDX | key=userpayroll_NUMPER_IDX | key_len=26 | ref=epartes_local.zparte.PERNR | rows=1 | Extra=
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 0.57406904,
+    "filesort": {
+      "sort_key": "coalesce(sum(zparte.DL + zparte.DF + zparte.NL + zparte.NF + zparte.DLC + zparte.DFC + zparte.NLC + zparte.NFC + zparte.DLB + zparte.DFB + zparte.NLB + zparte.NFB + zparte.DLBN + zparte.DFBN + zparte.NLBN + zparte.NFBN + zparte.DLCO + zparte.DFCO + zparte.NLCO + zparte.NFCO),0) desc",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "range",
+              "possible_keys": [
+                "idx_unico_persona_dia",
+                "idx_mes_padat",
+                "idx_Zparte_pernr_group",
+                "zparte_PERNR_IDX",
+                "zparte_PERNR_MES_EJERC_IDX"
+              ],
+              "key": "idx_unico_persona_dia",
+              "key_length": "29",
+              "used_key_parts": [
+                "PERNR",
+                "PADAT"
+              ],
+              "loops": 1,
+              "rows": 156,
+              "cost": 0.28520888,
+              "filtered": 100,
+              "index_condition": "zparte.PERNR = '00000012' and zparte.PADAT between '2025-01-01' and '2025-12-31'"
+            }
+          },
+          {
+            "table": {
+              "table_name": "userpayroll",
+              "access_type": "ref",
+              "possible_keys": [
+                "userpayroll_NUMPER_IDX"
+              ],
+              "key": "userpayroll_NUMPER_IDX",
+              "key_length": "26",
+              "used_key_parts": [
+                "NUMPER"
+              ],
+              "ref": [
+                "epartes_local.zparte.PERNR"
+              ],
+              "loops": 156,
+              "rows": 1,
+              "cost": 0.28886016,
+              "filtered": 100
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
+## 3. Producción + propuestos — mediana 1.78 ms, mínimo 1.6 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=range | possible_keys=idx_unico_persona_dia,idx_mes_padat,idx_Zparte_pernr_group,zparte_PERNR_IDX,zparte_PERNR_MES_EJERC_IDX | key=idx_unico_persona_dia | key_len=29 | ref=None | rows=156 | Extra=Using index condition; Using temporary; Using filesort
+  id=1 | select_type=SIMPLE | table=userpayroll | type=ref | possible_keys=userpayroll_NUMPER_IDX | key=userpayroll_NUMPER_IDX | key_len=26 | ref=epartes_local.zparte.PERNR | rows=1 | Extra=
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 0.57406904,
+    "filesort": {
+      "sort_key": "coalesce(sum(zparte.DL + zparte.DF + zparte.NL + zparte.NF + zparte.DLC + zparte.DFC + zparte.NLC + zparte.NFC + zparte.DLB + zparte.DFB + zparte.NLB + zparte.NFB + zparte.DLBN + zparte.DFBN + zparte.NLBN + zparte.NFBN + zparte.DLCO + zparte.DFCO + zparte.NLCO + zparte.NFCO),0) desc",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "range",
+              "possible_keys": [
+                "idx_unico_persona_dia",
+                "idx_mes_padat",
+                "idx_Zparte_pernr_group",
+                "zparte_PERNR_IDX",
+                "zparte_PERNR_MES_EJERC_IDX"
+              ],
+              "key": "idx_unico_persona_dia",
+              "key_length": "29",
+              "used_key_parts": [
+                "PERNR",
+                "PADAT"
+              ],
+              "loops": 1,
+              "rows": 156,
+              "cost": 0.28520888,
+              "filtered": 100,
+              "index_condition": "zparte.PERNR = '00000012' and zparte.PADAT between '2025-01-01' and '2025-12-31'"
+            }
+          },
+          {
+            "table": {
+              "table_name": "userpayroll",
+              "access_type": "ref",
+              "possible_keys": [
+                "userpayroll_NUMPER_IDX"
+              ],
+              "key": "userpayroll_NUMPER_IDX",
+              "key_length": "26",
+              "used_key_parts": [
+                "NUMPER"
+              ],
+              "ref": [
+                "epartes_local.zparte.PERNR"
+              ],
+              "loops": 156,
+              "rows": 1,
+              "cost": 0.28886016,
+              "filtered": 100
+            }
+          }
+        ]
+      }
+    }
+  }
+}

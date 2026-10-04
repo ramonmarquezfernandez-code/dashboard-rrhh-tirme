@@ -1,0 +1,116 @@
+# Años disponibles (combo de año) · perfil mando · sentencia 1
+
+SELECT DISTINCT zparte.`EJERC` AS `zparte_EJERC` 
+FROM zparte 
+WHERE (zparte.`PERNR` = '00000105' OR zparte.`CODGR` IN (3)) AND zparte.`EJERC` IS NOT NULL
+
+## 1. Solo clave primaria — mediana 54.23 ms, mínimo 48.32 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=ALL | possible_keys=None | key=None | key_len=None | ref=None | rows=99931 | Extra=Using where; Using temporary
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 18.384465,
+    "temporary_table": {
+      "nested_loop": [
+        {
+          "table": {
+            "table_name": "zparte",
+            "access_type": "ALL",
+            "loops": 1,
+            "rows": 99931,
+            "cost": 18.384465,
+            "filtered": 100,
+            "attached_condition": "(zparte.PERNR = '00000105' or zparte.CODGR = 3) and zparte.EJERC is not null"
+          }
+        }
+      ]
+    }
+  }
+}
+
+## 2. Índices de producción — mediana 27.76 ms, mínimo 25.79 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=range | possible_keys=idx_unico_persona_dia,idx_ejer_month,idx_zparte_codgr,idx_zparte_ejerc,idx_zparte_ejerc_codgr,idx_zparte_ejerc_mes_codgr_stat,idx_Zparte_pernr_group,ZPARTE_GROUP_IDX,zparte_PERNR_IDX,zparte_PERNR_MES_EJERC_IDX | key=idx_zparte_ejerc_codgr | key_len=15 | ref=None | rows=97505 | Extra=Using where; Using index
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 14.62721756,
+    "nested_loop": [
+      {
+        "table": {
+          "table_name": "zparte",
+          "access_type": "range",
+          "possible_keys": [
+            "idx_unico_persona_dia",
+            "idx_ejer_month",
+            "idx_zparte_codgr",
+            "idx_zparte_ejerc",
+            "idx_zparte_ejerc_codgr",
+            "idx_zparte_ejerc_mes_codgr_stat",
+            "idx_Zparte_pernr_group",
+            "ZPARTE_GROUP_IDX",
+            "zparte_PERNR_IDX",
+            "zparte_PERNR_MES_EJERC_IDX"
+          ],
+          "key": "idx_zparte_ejerc_codgr",
+          "key_length": "15",
+          "used_key_parts": [
+            "EJERC"
+          ],
+          "loops": 1,
+          "rows": 97505,
+          "cost": 14.62721756,
+          "filtered": 100,
+          "attached_condition": "(zparte.PERNR = '00000105' or zparte.CODGR = 3) and zparte.EJERC is not null",
+          "using_index": true
+        }
+      }
+    ]
+  }
+}
+
+## 3. Producción + propuestos — mediana 21.92 ms, mínimo 21.54 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=range | possible_keys=idx_unico_persona_dia,idx_ejer_month,idx_zparte_codgr,idx_zparte_ejerc,idx_zparte_ejerc_codgr,idx_zparte_ejerc_mes_codgr_stat,idx_Zparte_pernr_group,ZPARTE_GROUP_IDX,zparte_PERNR_IDX,zparte_PERNR_MES_EJERC_IDX,idx_zparte_codgr_padat | key=idx_zparte_ejerc_codgr | key_len=15 | ref=None | rows=94747 | Extra=Using where; Using index
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 14.22095073,
+    "nested_loop": [
+      {
+        "table": {
+          "table_name": "zparte",
+          "access_type": "range",
+          "possible_keys": [
+            "idx_unico_persona_dia",
+            "idx_ejer_month",
+            "idx_zparte_codgr",
+            "idx_zparte_ejerc",
+            "idx_zparte_ejerc_codgr",
+            "idx_zparte_ejerc_mes_codgr_stat",
+            "idx_Zparte_pernr_group",
+            "ZPARTE_GROUP_IDX",
+            "zparte_PERNR_IDX",
+            "zparte_PERNR_MES_EJERC_IDX",
+            "idx_zparte_codgr_padat"
+          ],
+          "key": "idx_zparte_ejerc_codgr",
+          "key_length": "15",
+          "used_key_parts": [
+            "EJERC"
+          ],
+          "loops": 1,
+          "rows": 94747,
+          "cost": 14.22095073,
+          "filtered": 100,
+          "attached_condition": "(zparte.PERNR = '00000105' or zparte.CODGR = 3) and zparte.EJERC is not null",
+          "using_index": true
+        }
+      }
+    ]
+  }
+}

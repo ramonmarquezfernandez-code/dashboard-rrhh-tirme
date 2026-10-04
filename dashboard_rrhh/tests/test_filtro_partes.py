@@ -101,7 +101,8 @@ def test_condicion_libre():
 # --- SP ---------------------------------------------------------------------------
 
 def test_marcado_solo_admite_valores_activados():
-    assert sql([marcado(ZParte.SP)]) == ["trim(zparte.`SP`) IN ('t', 'X', '1', 'S')"]
+    # Sin funciones sobre la columna, para que pueda usar un índice
+    assert sql([marcado(ZParte.SP)]) == ["zparte.`SP` IN ('t', 'X', '1', 'S')"]
 
 
 @pytest.mark.parametrize('fecha, meses, esperado', [

@@ -1,0 +1,134 @@
+# SP de los últimos 12 y 24 meses · perfil empleado · sentencia 2
+
+SELECT zparte.`DPTO` AS departamento, count(*) AS sp 
+FROM zparte 
+WHERE zparte.`PERNR` = '00000012' AND zparte.`PADAT` BETWEEN '2025-10-03' AND '2026-10-03' AND zparte.`SP` IN ('t', 'X', '1', 'S') GROUP BY zparte.`DPTO` ORDER BY count(*) DESC, zparte.`DPTO` ASC
+
+## 1. Solo clave primaria — mediana 38.03 ms, mínimo 36.3 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=ALL | possible_keys=None | key=None | key_len=None | ref=None | rows=99931 | Extra=Using where; Using temporary; Using filesort
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 85.57824722,
+    "filesort": {
+      "sort_key": "count(0) desc, zparte.DPTO",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "ALL",
+              "loops": 1,
+              "rows": 99931,
+              "cost": 18.384465,
+              "filtered": 100,
+              "attached_condition": "zparte.PERNR = '00000012' and zparte.PADAT between <cache>('2025-10-03') and <cache>('2026-10-03') and zparte.SP in ('t','X','1','S')"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
+## 2. Índices de producción — mediana 0.98 ms, mínimo 0.9 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=range | possible_keys=idx_unico_persona_dia,idx_mes_padat,idx_Zparte_pernr_group,zparte_PERNR_IDX,zparte_PERNR_MES_EJERC_IDX | key=idx_unico_persona_dia | key_len=29 | ref=None | rows=162 | Extra=Using index condition; Using where; Using temporary; Using filesort
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 0.400956614,
+    "filesort": {
+      "sort_key": "count(0) desc, zparte.DPTO",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "range",
+              "possible_keys": [
+                "idx_unico_persona_dia",
+                "idx_mes_padat",
+                "idx_Zparte_pernr_group",
+                "zparte_PERNR_IDX",
+                "zparte_PERNR_MES_EJERC_IDX"
+              ],
+              "key": "idx_unico_persona_dia",
+              "key_length": "29",
+              "used_key_parts": [
+                "PERNR",
+                "PADAT"
+              ],
+              "loops": 1,
+              "rows": 162,
+              "cost": 0.29608472,
+              "filtered": 100,
+              "index_condition": "zparte.PERNR = '00000012' and zparte.PADAT between '2025-10-03' and '2026-10-03'",
+              "attached_condition": "zparte.SP in ('t','X','1','S')"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
+## 3. Producción + propuestos — mediana 1.48 ms, mínimo 1.29 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=ref|filter | possible_keys=idx_unico_persona_dia,idx_mes_padat,idx_Zparte_pernr_group,zparte_PERNR_IDX,zparte_PERNR_MES_EJERC_IDX,idx_zparte_sp_padat | key=idx_Zparte_pernr_group|idx_zparte_sp_padat | key_len=26|7 | ref=const | rows=432 (1%) | Extra=Using index condition; Using where; Using temporary; Using filesort; Using rowid filter
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 0.217435497,
+    "filesort": {
+      "sort_key": "count(0) desc, zparte.DPTO",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "ref",
+              "possible_keys": [
+                "idx_unico_persona_dia",
+                "idx_mes_padat",
+                "idx_Zparte_pernr_group",
+                "zparte_PERNR_IDX",
+                "zparte_PERNR_MES_EJERC_IDX",
+                "idx_zparte_sp_padat"
+              ],
+              "key": "idx_Zparte_pernr_group",
+              "key_length": "26",
+              "used_key_parts": [
+                "PERNR"
+              ],
+              "ref": [
+                "const"
+              ],
+              "rowid_filter": {
+                "range": {
+                  "key": "idx_zparte_sp_padat",
+                  "used_key_parts": [
+                    "SP",
+                    "PADAT"
+                  ]
+                },
+                "rows": 860,
+                "selectivity_pct": 0.907680454
+              },
+              "loops": 1,
+              "rows": 432,
+              "cost": 0.217435497,
+              "filtered": 0.907680452,
+              "index_condition": "zparte.PERNR = '00000012' and zparte.PADAT between '2025-10-03' and '2026-10-03'",
+              "attached_condition": "zparte.PERNR <=> '00000012' and zparte.SP in ('t','X','1','S')"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

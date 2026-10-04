@@ -14,9 +14,12 @@ export const ETIQUETAS_ROL: Record<Rol, string> = {
 const TODOS: Rol[] = ['hr', 'mando', 'empleado'];
 
 export const PERMISOS_RUTA: Record<string, Rol[]> = {
+  // Formulario de parte: todos los perfiles, cada uno sobre sus propios partes
+  'nuevo-parte': TODOS,
+  'mis-partes': TODOS,
+  'mis-partes/:mandt': TODOS,
   'resumen-general': ['hr', 'mando'],
-  personal: ['hr'],
-  turnos: ['hr'],
+  personal: ['hr', 'mando'],
   'horas-extra': TODOS,
   'horas-extra-empleados': TODOS,
   'ranking-combo': ['hr', 'mando'],

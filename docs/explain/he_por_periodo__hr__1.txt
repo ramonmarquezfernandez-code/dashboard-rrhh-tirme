@@ -1,0 +1,108 @@
+# HE por periodos, ejercicio 2025 completo · perfil hr · sentencia 1
+
+SELECT zparte.`MES` AS mes, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF`), 0) AS normales, coalesce(sum(zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC`), 0) AS compensar, coalesce(sum(zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB`), 0) AS busca, coalesce(sum(zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN`), 0) AS buscanp, coalesce(sum(zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS combo, coalesce(sum(zparte.`DL` + zparte.`DF` + zparte.`NL` + zparte.`NF` + zparte.`DLC` + zparte.`DFC` + zparte.`NLC` + zparte.`NFC` + zparte.`DLB` + zparte.`DFB` + zparte.`NLB` + zparte.`NFB` + zparte.`DLBN` + zparte.`DFBN` + zparte.`NLBN` + zparte.`NFBN` + zparte.`DLCO` + zparte.`DFCO` + zparte.`NLCO` + zparte.`NFCO`), 0) AS total 
+FROM zparte 
+WHERE zparte.`EJERC` = '2025' AND zparte.`MES` IN ('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') GROUP BY zparte.`MES`
+
+## 1. Solo clave primaria — mediana 87.03 ms, mínimo 85.61 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=ALL | possible_keys=None | key=None | key_len=None | ref=None | rows=99931 | Extra=Using where; Using temporary; Using filesort
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 85.57824722,
+    "filesort": {
+      "sort_key": "zparte.MES",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "ALL",
+              "loops": 1,
+              "rows": 99931,
+              "cost": 18.384465,
+              "filtered": 100,
+              "attached_condition": "zparte.EJERC = '2025' and zparte.MES in ('01','02','03','04','05','06','07','08','09','10','11','12')"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
+## 2. Índices de producción — mediana 91.9 ms, mínimo 90.19 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=ALL | possible_keys=idx_ejer_month,idx_mes_ejer,idx_mes_mes_ejerc_padat,idx_zparte_ejerc,idx_zparte_ejerc_codgr,idx_zparte_ejerc_mes_codgr_stat | key=None | key_len=None | ref=None | rows=97505 | Extra=Using where; Using temporary; Using filesort
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 42.47297372,
+    "filesort": {
+      "sort_key": "zparte.MES",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "ALL",
+              "possible_keys": [
+                "idx_ejer_month",
+                "idx_mes_ejer",
+                "idx_mes_mes_ejerc_padat",
+                "idx_zparte_ejerc",
+                "idx_zparte_ejerc_codgr",
+                "idx_zparte_ejerc_mes_codgr_stat"
+              ],
+              "loops": 1,
+              "rows": 97505,
+              "cost": 17.989027,
+              "filtered": 37.5632019,
+              "attached_condition": "zparte.EJERC = '2025' and zparte.MES in ('01','02','03','04','05','06','07','08','09','10','11','12')"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
+## 3. Producción + propuestos — mediana 89.82 ms, mínimo 87.76 ms
+
+  id=1 | select_type=SIMPLE | table=zparte | type=ALL | possible_keys=idx_ejer_month,idx_mes_ejer,idx_mes_mes_ejerc_padat,idx_zparte_ejerc,idx_zparte_ejerc_codgr,idx_zparte_ejerc_mes_codgr_stat | key=None | key_len=None | ref=None | rows=94747 | Extra=Using where; Using temporary; Using filesort
+
+{
+  "query_block": {
+    "select_id": 1,
+    "cost": 42.02341972,
+    "filesort": {
+      "sort_key": "zparte.MES",
+      "temporary_table": {
+        "nested_loop": [
+          {
+            "table": {
+              "table_name": "zparte",
+              "access_type": "ALL",
+              "possible_keys": [
+                "idx_ejer_month",
+                "idx_mes_ejer",
+                "idx_mes_mes_ejerc_padat",
+                "idx_zparte_ejerc",
+                "idx_zparte_ejerc_codgr",
+                "idx_zparte_ejerc_mes_codgr_stat"
+              ],
+              "loops": 1,
+              "rows": 94747,
+              "cost": 17.539473,
+              "filtered": 38.65663147,
+              "attached_condition": "zparte.EJERC = '2025' and zparte.MES in ('01','02','03','04','05','06','07','08','09','10','11','12')"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

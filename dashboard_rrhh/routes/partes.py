@@ -135,6 +135,27 @@ class PlantillaResumen(Resource):
         )
 
 
+@partes_ns.route('/personal')
+class Personal(Resource):
+    @requiere_rol(ROL_HR, ROL_MANDO)
+    @partes_ns.doc(security='Bearer', params={'grupo': "Nombre de grupo o 'TODOS'", 'direccion': "Nombre de área o 'TODAS'"})
+    def get(self):
+        """Directorio de empleados activos visibles para el perfil, con los grupos y áreas para filtrar."""
+        return PlantillaService(filtro_plantilla()).listado(
+            grupo=(request.args.get('grupo') or '').strip(),
+            direccion=(request.args.get('direccion') or '').strip(),
+        )
+
+
+@partes_ns.route('/ejercicios')
+class Ejercicios(Resource):
+    @requiere_rol()
+    @partes_ns.doc(security='Bearer')
+    def get(self):
+        """Ejercicios con partes visibles para el perfil (y el año en curso), para los combos de año."""
+        return HorasExtraService(filtro_partes()).ejercicios()
+
+
 # --- Resúmenes por ejercicio -------------------------------------------------
 
 @partes_ns.route('/resumen-departamento')
