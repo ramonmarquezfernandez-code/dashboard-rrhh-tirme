@@ -86,3 +86,8 @@ Thumbs.db
 *.7z
 *.bak
 *.tmp
+
+# ==========================================
+# Entrega: guía personal de la defensa (no se entrega)
+# ==========================================
+entrega/guia_defensa.md

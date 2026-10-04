@@ -1,2 +1,5 @@
 # Los scripts de shell deben tener finales de línea LF para funcionar en Linux
 *.sh text eol=lf
+
+# La carpeta de entrega (memoria y capturas) va aparte en el zip, no dentro del proyecto
+entrega/ export-ignore

@@ -145,7 +145,7 @@ COLUMNAS_HE = (
 COLUMNAS_PARTE = (
     'MANDT', 'PERNR', 'PADAT', 'TIPO', 'TURNO', 'REDAT', 'UPDAT', 'MODIF', 'MES', 'EJERC', 'STAT', 'PAJOB',
     'CODGR', 'DPTO', 'CATEG', 'TIPODIA', 'PERNRCR', 'CRDAT', 'PERNRVB', 'VBDAT', 'PERNRFI', 'FIDAT',
-    'PERNRHR', 'HRDAT', 'HN', *COLUMNAS_HE, *MARCAS_X, 'PA', 'KM', 'TIPOTURNO',
+    'PERNRHR', 'HRDAT', 'HN', 'HNDEC', *COLUMNAS_HE, *MARCAS_X, 'PA', 'KM', 'TIPOTURNO',
     'TELETRABAJO', 'DESCANSO', 'USER_ID',
 )
 
@@ -464,13 +464,15 @@ class GeneradorDatos:
         # Las columnas de teletrabajo/descanso no se rellenaban en los partes antiguos (NULL)
         sin_marcas_nuevas = rng.random() < 0.39
         descanso = rng.random() < 0.03
+        horas_normales = 0 if descanso else rng.choices((0, 8, 6, 7), weights=(62, 32, 5, 1))[0]
 
         valores = {
             'MANDT': mandt, 'PERNR': empleado.pernr, 'PADAT': dia, 'TIPO': 'T', 'TURNO': turno,
             'REDAT': fechas['CRDAT'], 'UPDAT': fechas['UPDAT'], 'MODIF': 'S' if rng.random() < 0.028 else None,
             'MES': mes, 'EJERC': ejercicio, 'STAT': estado, 'PAJOB': 'Z' if rng.random() < 0.24 else '',
             'CODGR': empleado.grupo, 'DPTO': self.departamentos[dpto][0], 'CATEG': empleado.categoria,
-            'TIPODIA': dia_tipo, 'HN': 0 if descanso else rng.choices((0, 8, 6, 7), weights=(62, 32, 5, 1))[0],
+            # Presencia en horas (HN) y en formato HHMMSS (HNDEC), como en zparte real
+            'TIPODIA': dia_tipo, 'HN': horas_normales, 'HNDEC': f'{horas_normales:02d}0000',
             **self._horas_extra(turno, dia_tipo),
             **{marca: 'X' if rng.random() < probabilidad else None for marca, probabilidad in MARCAS_X.items()},
             'PA': '1' if rng.random() < 0.006 else None, 'KM': 0,
