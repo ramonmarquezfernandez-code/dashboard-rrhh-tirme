@@ -114,6 +114,7 @@ python -m venv venv
 .\venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 python seed.py
+python generar_datos.py   # recomendado (~25 s), ver abajo
 python -m pytest
 python app.py
 ```
@@ -128,11 +129,15 @@ python3 -m venv venv
 source venv/bin/activate
 python -m pip install -r requirements.txt
 python seed.py
+python generar_datos.py   # recomendado (~25 s), ver abajo
 python -m pytest
 python app.py          # o bien: ./run.sh
 ```
 
 - **`python seed.py`** crea los usuarios de prueba con contraseña cifrada (bcrypt) y sus roles (tabla de abajo). Se puede ejecutar varias veces.
+- **`python generar_datos.py`** (recomendado) carga datos de demostración inventados: 250 empleados en 25 grupos y unos 100.000 partes (apartado 7).
+  - **Por qué se recomienda:** con el dump y los usuarios de prueba solo hay 5 empleados y 3 partes, así que el cuadro de mando (horas extra, ranking, servicios prestados y sus gráficos) aparece casi vacío. Con estos datos se ve como en producción, se nota la diferencia entre lo que ve RRHH, un mando y un empleado, y se puede medir el rendimiento con un volumen realista.
+  - Mantiene los 5 usuarios de prueba y no afecta a los tests, que usan su propia BD (`epartes_test`).
 - **`pytest`** debe terminar con `159 passed`.
   - Los tests de login, de acceso a datos y de cálculo de horas extra usan la BD `epartes_test` del contenedor.
   - Si MariaDB no está levantada, esos tests aparecen como *skipped*, con el motivo, y solo se ejecutan los 24 que no necesitan BD.
